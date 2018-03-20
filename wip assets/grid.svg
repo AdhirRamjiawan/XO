@@ -18,8 +18,8 @@
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="grid.svg"
    inkscape:export-filename="C:\Users\Adhir\Documents\Corona Projects\XO\assets\grid.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-xdpi="25.400002"
+   inkscape:export-ydpi="25.400002">
   <defs
      id="defs6041">
     <linearGradient
@@ -38,6 +38,19 @@
          offset="0"
          id="stop6620" />
     </linearGradient>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter945"
+       x="-0.023942446"
+       width="1.0478849"
+       y="-0.024057831"
+       height="1.0481157">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="33.617876"
+         id="feGaussianBlur947" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -46,9 +59,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.12374369"
-     inkscape:cx="1099.7303"
-     inkscape:cy="1674.3664"
+     inkscape:zoom="0.087500002"
+     inkscape:cx="1473.5446"
+     inkscape:cy="1783.9916"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -67,7 +80,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -129,5 +142,11 @@
        height="872.22791"
        x="608.54596"
        y="-590.34814" />
+    <path
+       style="fill:#1a1a1a;fill-opacity:1;stroke:#342f2f;stroke-width:81.39761353;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke;filter:url(#filter945)"
+       d="M 16.846801,1708.6216 V 31.768417 H 1701.7812 3386.7156 V 1708.6216 3385.4748 H 1701.7812 16.846801 Z M 2287.6697,2856.1549 v -496.9951 h -565.6854 -565.6855 v 496.9951 496.995 h 565.6855 565.6854 z m -1155.6145,-8.0813 V 2359.1598 H 594.65404 57.252902 v 488.9138 488.9139 H 594.65404 1132.0552 Z m 2214.2543,0 v -488.9138 h -517.1981 -517.1981 v 488.9138 488.9139 h 517.1981 517.1981 z M 1132.0552,2322.7943 v -20.203 H 594.65404 57.252902 v 20.203 20.2031 H 594.65404 1132.0552 Z m 1155.6145,0 v -20.203 h -565.6854 -565.6855 v 20.203 20.2031 h 565.6855 565.6854 z m 1058.6398,0 v -20.203 h -517.1981 -517.1981 v 20.203 20.2031 h 517.1981 517.1981 z M 1132.0552,1744.9871 V 1211.6266 H 594.65404 57.252902 v 533.3605 533.3605 H 594.65404 1132.0552 Z m 1155.6145,0 v -533.3605 h -565.6854 -565.6855 v 533.3605 533.3605 h 565.6855 565.6854 z m 1058.6398,0 v -533.3605 h -517.1981 -517.1981 v 533.3605 533.3605 h 517.1981 517.1981 z M 1132.0552,1167.1798 v -20.203 H 594.65404 57.252902 v 20.203 20.2031 H 594.65404 1132.0552 Z m 1155.6145,0 v -20.203 h -565.6854 -565.6855 v 20.203 20.2031 h 565.6855 565.6854 z m 1058.6398,0 v -20.203 h -517.1981 -517.1981 v 20.203 20.2031 h 517.1981 517.1981 z M 1132.0552,597.45383 V 64.093298 H 594.65404 57.252902 V 597.45383 1130.8144 H 594.65404 1132.0552 Z m 1155.6145,0 V 64.093298 H 1721.9843 1156.2988 V 597.45383 1130.8144 h 565.6855 565.6854 z m 1058.6398,0 V 64.093298 H 2829.1114 2311.9133 V 597.45383 1130.8144 h 517.1981 517.1981 z"
+       id="path847"
+       inkscape:connector-curvature="0"
+       transform="matrix(0.26458333,0,0,0.26458333,0,-603)" />
   </g>
 </svg>

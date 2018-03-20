@@ -8,7 +8,7 @@
 
 local currentPlayerSymbol = "X"
 
-local background = display.newImageRect("assets/space1.jpg", 900, 900)
+local background = display.newImageRect("assets/background.jpg", 900, 900)
 background.anchorX = 0
 background.anchorY = 0
 
@@ -16,14 +16,12 @@ local grid = display.newImageRect("assets/grid.png", 900, 900)
 grid.anchorX = 0
 grid.anchorY = 0
 
-local backgroundMusic = audio.loadSound("assets/music.mp3")
+local backgroundMusic = audio.loadSound("assets/music.ogg")
 local musicVolume = 0.5
 local musicPlaying = true
 
 audio.setVolume(musicVolume)
 audio.play(backgroundMusic)
-
-
 
 
 local function tapListener(event)
