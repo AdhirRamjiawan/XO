@@ -7,7 +7,7 @@
 -- Your code here
 
 local gridMatrix = {}
-
+local gameEnded = false
 local currentPlayerSymbol = "X"
 
 local background = display.newImageRect("assets/background.jpg", 900, 900)
@@ -75,6 +75,11 @@ end
 
 
 local function tapListener(event)
+
+    if (gameEnded) then
+        return true
+    end
+
     if (event.phase == "ended") then
         -- FIRST ROW
 
@@ -184,6 +189,7 @@ local function tapListener(event)
             WinCheck4() or
             WinCheck5()) then
               print (" a win!")
+              gameEnded = true
            --   local winText = display.newText( currentPlayerSymbol .. " has won!", 100, 200, native.systemFont, 16 )
            --   winText:setFillColor( 1, 0, 0 )
               audio.setVolume(musicVolume)
