@@ -76,6 +76,7 @@ end
 
 local function tapListener(event)
 
+    -- if game ended then we don't want any player to continue playing
     if (gameEnded) then
         return true
     end
@@ -177,28 +178,27 @@ local function tapListener(event)
             gridMatrix[2][2] = currentPlayerSymbol
         end
 
+        -- switch player 
         if (currentPlayerSymbol == "X") then
             currentPlayerSymbol = "O"
         else
             currentPlayerSymbol = "X"
         end
 
-        if (WinCheck1() or
-            WinCheck2() or
-            WinCheck3() or
-            WinCheck4() or
-            WinCheck5()) then
+        if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()) then
               print (" a win!")
               gameEnded = true
-           --   local winText = display.newText( currentPlayerSymbol .. " has won!", 100, 200, native.systemFont, 16 )
-           --   winText:setFillColor( 1, 0, 0 )
+           
               audio.setVolume(musicVolume)
               audio.play(tadaMusic)
-          end
+
+               local winText = display.newText( currentPlayerSymbol .. " has won!", 
+               display.contentCenterX, display.contentCenterY, 
+               native.systemFont, 106 )
+               winText:setFillColor( 0, 0, 1 )
+        end
     end
     
-    
-
     return true
 end
 
