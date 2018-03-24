@@ -122,7 +122,13 @@ local function tapListener(event)
     if (event.phase == "ended") then
         -- FIRST ROW
 
-        if (event.x > 0 and event.x < 300 and event.y > 0 and event.y < 300) then    
+        if (event.x > 0 and event.x < 300 and event.y > 0 and event.y < 300) then 
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[0][0] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -133,6 +139,12 @@ local function tapListener(event)
         end
         
         if (event.x > 300 and event.x < 600 and event.y > 0 and event.y < 300) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[0][1] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -143,6 +155,12 @@ local function tapListener(event)
         end
 
         if (event.x > 600 and event.x < 900 and event.y > 150 and event.y < 300) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[0][2] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -155,6 +173,12 @@ local function tapListener(event)
         --- SECOND ROW
 
         if (event.x > 0 and event.x < 300 and event.y > 300 and event.y < 600) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[1][0] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -165,6 +189,12 @@ local function tapListener(event)
         end
         
         if (event.x > 300 and event.x < 600 and event.y > 300 and event.y < 600) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[1][1] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -175,6 +205,12 @@ local function tapListener(event)
         end
 
         if (event.x > 600 and event.x < 900 and event.y > 300 and event.y < 600) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[1][2] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -187,6 +223,12 @@ local function tapListener(event)
         --- THIRD ROW
 
         if (event.x > 0 and event.x < 300 and event.y > 600 and event.y < 900) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[2][0] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -197,6 +239,12 @@ local function tapListener(event)
         end
         
         if (event.x > 300 and event.x < 600 and event.y > 600 and event.y < 900) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[2][1] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
@@ -207,6 +255,12 @@ local function tapListener(event)
         end
 
         if (event.x > 600 and event.x < 900 and event.y > 600 and event.y < 900) then    
+
+            -- if grid element has a player marker then skip
+            if (gridMatrix[2][2] ~= nil) then
+                return true
+            end
+
             local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
             playerSymbol.anchorX = 0
             playerSymbol.anchorY = 0
