@@ -10,13 +10,8 @@ local gridMatrix = {}
 local gameEnded = false
 local currentPlayerSymbol = "X"
 
-local background = display.newImageRect("assets/background.jpg", 900, 900)
-background.anchorX = 0
-background.anchorY = 0
-
-local grid = display.newImageRect("assets/grid.png", 900, 900)
-grid.anchorX = 0
-grid.anchorY = 0
+local background = nil
+local grid = nil
 
 local backgroundMusic = audio.loadSound("assets/music.ogg")
 local tadaMusic = audio.loadSound("assets/tada.mp3")
@@ -28,6 +23,7 @@ audio.setVolume(musicVolume)
 audio.play(backgroundMusic)
 
 local function initGridMatrix()
+    gridMatrix = {}
     for i = 0, 2 do
         gridMatrix[i] = {}
 
@@ -35,6 +31,20 @@ local function initGridMatrix()
             gridMatrix[i][j] = nil
         end
     end
+end
+
+local function ResetGame()
+    initGridMatrix()
+    currentPlayerSymbol = "X"
+    gameEnded = false
+
+    background = display.newImageRect("assets/background.jpg", 900, 900)
+    background.anchorX = 0
+    background.anchorY = 0
+
+    grid = display.newImageRect("assets/grid.png", 900, 900)
+    grid.anchorX = 0
+    grid.anchorY = 0
 end
 
 -- top left diagonal check
@@ -246,12 +256,15 @@ local function keyboardListener(event)
                 musicPlaying = true
                 audio.setVolume(musicVolume)
             end
-            
+        end
+
+        if (event.keyName == "r") then
+            ResetGame()
         end
     end
 end
 
-initGridMatrix()
+ResetGame()
 
 background:addEventListener("touch", tapListener)
 Runtime:addEventListener( "key",keyboardListener )
