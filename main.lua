@@ -37,6 +37,7 @@ local function initGridMatrix()
     end
 end
 
+-- top left diagonal check
 local function WinCheck1()
     local result = gridMatrix[0][0] ~= nil and
     gridMatrix[1][1] == gridMatrix[0][0] and
@@ -46,12 +47,14 @@ local function WinCheck1()
         
 end
 
+-- bottom left diagonal check
 local function WinCheck2()
     return gridMatrix[2][0] ~= nil and
         gridMatrix[1][1] == gridMatrix[2][0] and
         gridMatrix[0][2] == gridMatrix[2][0]
 end
 
+-- first column check
 local function WinCheck3()
     return
         gridMatrix[0][0] ~= nil and
@@ -59,6 +62,7 @@ local function WinCheck3()
         gridMatrix[2][0] == gridMatrix[0][0]
 end
 
+-- second column check
 local function WinCheck4()
     return 
         gridMatrix[0][1] ~= nil and
@@ -66,6 +70,7 @@ local function WinCheck4()
         gridMatrix[2][1] == gridMatrix[0][1]
 end
 
+-- third column check
 local function WinCheck5()
     return
         gridMatrix[0][2] ~= nil and
@@ -73,6 +78,29 @@ local function WinCheck5()
         gridMatrix[2][2] == gridMatrix[0][2]
 end
 
+-- first row check
+local function WinCheck6()
+    return
+        gridMatrix[0][0] ~= nil and
+        gridMatrix[0][1] == gridMatrix[0][0] and
+        gridMatrix[0][2] == gridMatrix[0][0]
+end
+
+-- second row check
+local function WinCheck7()
+    return
+        gridMatrix[1][0] ~= nil and
+        gridMatrix[1][1] == gridMatrix[1][0] and
+        gridMatrix[1][2] == gridMatrix[1][0]
+end
+
+-- third row check
+local function WinCheck8()
+    return
+        gridMatrix[2][0] ~= nil and
+        gridMatrix[2][1] == gridMatrix[2][0] and
+        gridMatrix[2][2] == gridMatrix[2][0]
+end
 
 local function tapListener(event)
 
@@ -178,14 +206,10 @@ local function tapListener(event)
             gridMatrix[2][2] = currentPlayerSymbol
         end
 
-        -- switch player 
-        if (currentPlayerSymbol == "X") then
-            currentPlayerSymbol = "O"
-        else
-            currentPlayerSymbol = "X"
-        end
+        
 
-        if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()) then
+        if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()
+            or WinCheck6() or WinCheck7() or WinCheck8()) then
               print (" a win!")
               gameEnded = true
            
@@ -196,7 +220,16 @@ local function tapListener(event)
                display.contentCenterX, display.contentCenterY, 
                native.systemFont, 106 )
                winText:setFillColor( 0, 0, 1 )
+        else
+            -- switch player 
+            if (currentPlayerSymbol == "X") then
+                currentPlayerSymbol = "O"
+            else
+                currentPlayerSymbol = "X"
+            end
         end
+
+        
     end
     
     return true
