@@ -280,10 +280,16 @@ local function tapListener(event)
               audio.setVolume(musicVolume)
               audio.play(tadaMusic)
 
-               local winText = display.newText( currentPlayerSymbol .. " has won!", 
-               display.contentCenterX, display.contentCenterY, 
-               native.systemFont, 106 )
-               winText:setFillColor( 0, 0, 1 )
+               --local winText = display.newText( currentPlayerSymbol .. " has won!", 
+               --display.contentCenterX, display.contentCenterY, 
+               --native.systemFont, 106 )
+               --winText:setFillColor( 0, 0, 1 )
+                local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
+                wonImage.anchorX = 0
+                wonImage.anchorY = 0
+                wonImage.x = 50
+                wonImage.y = display.contentCenterY
+            
         else
             -- switch player 
             if (currentPlayerSymbol == "X") then
