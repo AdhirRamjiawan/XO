@@ -10,8 +10,11 @@ local gridMatrix = {}
 local gameEnded = false
 local currentPlayerSymbol = "X"
 
+
 local time = os.date('*t')
 local timeFromWin = os.time(time)
+local firstClickWaitPassed = true
+local firstClickWaitPassedTime = os.time(time)
 local background = nil
 local grid = nil
 
@@ -23,6 +26,12 @@ local musicPlaying = true
 
 audio.setVolume(musicVolume)
 audio.play(backgroundMusic)
+
+local function getTime()
+    local time = os.date('*t')
+    local seconds = os.time(time)
+    return seconds
+end
 
 local function initGridMatrix()
     gridMatrix = {}
@@ -132,10 +141,15 @@ end
 
 local function tapListener(event)
 
-    -- if game ended then we don't want any player to continue playing
-    if (gameEnded) then
-        ResetGame()
+    
+
+    
+
+    if (firstClickWaitPassed ~= true) then
         return true
+    elseif (gameEnded) then -- if game ended then we don't want any player to continue playing
+            ResetGame()
+            return true
     end
 
     if (event.phase == "ended") then
@@ -293,18 +307,20 @@ local function tapListener(event)
 
         if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()
             or WinCheck6() or WinCheck7() or WinCheck8()) then
-              print (" a win!")
-              gameEnded = true
-           
+                print (" a win!")
+                gameEnded = true
+                firstClickWaitPassed = false
+                firstClickWaitPassedTime = getTime()
+
                 background.fill.effect = "filter.crosshatch"
 
-              audio.setVolume(musicVolume)
-              audio.play(tadaMusic)
+                audio.setVolume(musicVolume)
+                audio.play(tadaMusic)
 
-               --local winText = display.newText( currentPlayerSymbol .. " has won!", 
-               --display.contentCenterX, display.contentCenterY, 
-               --native.systemFont, 106 )
-               --winText:setFillColor( 0, 0, 1 )
+                --local winText = display.newText( currentPlayerSymbol .. " has won!", 
+                --display.contentCenterX, display.contentCenterY, 
+                --native.systemFont, 106 )
+                --winText:setFillColor( 0, 0, 1 )
                 local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
                 wonImage.anchorX = 0
                 wonImage.anchorY = 0
@@ -314,6 +330,8 @@ local function tapListener(event)
                 timeFromWin = os.time(time)
         elseif (noPlayAvailable()) then
             gameEnded = true
+            firstClickWaitPassed = false
+            firstClickWaitPassedTime = getTime()
 
             local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
             noWinImage.anchorX = 0
@@ -329,7 +347,6 @@ local function tapListener(event)
             end
         end
 
-        
     end
     
     return true
@@ -355,6 +372,11 @@ local function keyboardListener(event)
 end
 
 local function onFrame(event)
+    print (getTime())
+    if ((getTime() - firstClickWaitPassedTime) > 3) then
+        firstClickWaitPassed = true
+    end
+
     --if (os.time(time) - timeFromWin > 2000) then
       --  ResetGame()
     --end
@@ -363,5 +385,5 @@ end
 ResetGame()
 
 background:addEventListener("touch", tapListener)
-Runtime:addEventListener( "key",keyboardListener )
+Runtime:addEventListener("key", keyboardListener)
 Runtime:addEventListener("enterFrame", onFrame)
