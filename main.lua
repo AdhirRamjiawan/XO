@@ -13,8 +13,7 @@ local currentPlayerSymbol = "X"
 
 local time = os.date('*t')
 local timeFromWin = os.time(time)
-local firstClickWaitPassed = true
-local firstClickWaitPassedTime = os.time(time)
+local gameEndedTime = os.time(time)
 local background = nil
 local grid = nil
 
@@ -141,15 +140,8 @@ end
 
 local function tapListener(event)
 
-    
-
-    
-
-    if (firstClickWaitPassed ~= true) then
+    if (gameEnded) then
         return true
-    elseif (gameEnded) then -- if game ended then we don't want any player to continue playing
-            ResetGame()
-            return true
     end
 
     if (event.phase == "ended") then
@@ -309,8 +301,7 @@ local function tapListener(event)
             or WinCheck6() or WinCheck7() or WinCheck8()) then
                 print (" a win!")
                 gameEnded = true
-                firstClickWaitPassed = false
-                firstClickWaitPassedTime = getTime()
+                gameEndedTime = getTime()
 
                 background.fill.effect = "filter.crosshatch"
 
@@ -330,8 +321,7 @@ local function tapListener(event)
                 timeFromWin = os.time(time)
         elseif (noPlayAvailable()) then
             gameEnded = true
-            firstClickWaitPassed = false
-            firstClickWaitPassedTime = getTime()
+            gameEndedTime = getTime()
 
             local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
             noWinImage.anchorX = 0
@@ -372,9 +362,9 @@ local function keyboardListener(event)
 end
 
 local function onFrame(event)
-    print (getTime())
-    if ((getTime() - firstClickWaitPassedTime) > 3) then
-        firstClickWaitPassed = true
+    --print (getTime())
+    if (gameEnded and (getTime() - gameEndedTime) > 3) then
+        ResetGame()
     end
 
     --if (os.time(time) - timeFromWin > 2000) then
