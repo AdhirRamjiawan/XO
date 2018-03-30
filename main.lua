@@ -10,6 +10,8 @@ local gridMatrix = {}
 local gameEnded = false
 local currentPlayerSymbol = "X"
 
+local time = os.date('*t')
+local timeFromWin = os.time(time)
 local background = nil
 local grid = nil
 
@@ -31,6 +33,22 @@ local function initGridMatrix()
             gridMatrix[i][j] = nil
         end
     end
+end
+
+local function noPlayAvailable()
+
+    print("no play available check")
+
+    for i = 0, 2 do
+        for j = 0, 2 do
+            if (gridMatrix[i][j] == nil) then
+                print("no play available!")
+                return false
+            end
+        end
+    end
+
+    return true
 end
 
 local function ResetGame()
@@ -116,6 +134,7 @@ local function tapListener(event)
 
     -- if game ended then we don't want any player to continue playing
     if (gameEnded) then
+        ResetGame()
         return true
     end
 
@@ -277,6 +296,8 @@ local function tapListener(event)
               print (" a win!")
               gameEnded = true
            
+                background.fill.effect = "filter.crosshatch"
+
               audio.setVolume(musicVolume)
               audio.play(tadaMusic)
 
@@ -290,6 +311,15 @@ local function tapListener(event)
                 wonImage.x = 50
                 wonImage.y = display.contentCenterY
             
+                timeFromWin = os.time(time)
+        elseif (noPlayAvailable()) then
+            gameEnded = true
+
+            local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
+            noWinImage.anchorX = 0
+            noWinImage.anchorY = 0
+            noWinImage.x = 50
+            noWinImage.y = display.contentCenterY
         else
             -- switch player 
             if (currentPlayerSymbol == "X") then
@@ -324,7 +354,14 @@ local function keyboardListener(event)
     end
 end
 
+local function onFrame(event)
+    --if (os.time(time) - timeFromWin > 2000) then
+      --  ResetGame()
+    --end
+end
+
 ResetGame()
 
 background:addEventListener("touch", tapListener)
 Runtime:addEventListener( "key",keyboardListener )
+Runtime:addEventListener("enterFrame", onFrame)
