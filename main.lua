@@ -156,6 +156,72 @@ local function WinCheck8()
         gridMatrix[2][2] == gridMatrix[2][0]
 end
 
+
+local function handleWinCheckScenarios()
+    if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()
+        or WinCheck6() or WinCheck7() or WinCheck8()) then
+            print (" a win!")
+            gameEnded = true
+            gameEndedTime = getTime()
+
+            --background.fill.effect = "filter.crosshatch"
+
+            audio.setVolume(musicVolume)
+            audio.play(tadaMusic)
+
+            local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
+            wonImage.anchorX = 0
+            wonImage.anchorY = 0
+            wonImage.x = 50
+            wonImage.y = display.contentCenterY
+        
+            displayAssets[displayAssetsIndex] = wonImage
+            displayAssetsIndex = displayAssetsIndex + 1
+
+            timeFromWin = os.time(time)
+    elseif (noPlayAvailable()) then
+        gameEnded = true
+        gameEndedTime = getTime()
+
+        local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
+        noWinImage.anchorX = 0
+        noWinImage.anchorY = 0
+        noWinImage.x = 50
+        noWinImage.y = display.contentCenterY
+
+        displayAssets[displayAssetsIndex] = noWinImage
+        displayAssetsIndex = displayAssetsIndex + 1
+    else
+        -- switch player 
+        if (currentPlayerSymbol == "X") then
+            currentPlayerSymbol = "O"
+        else
+            currentPlayerSymbol = "X"
+        end
+    end
+end
+
+local function handlePlayerMove(event, x1, x2, y1, y2, gridMatrixX, gridMatrixY, symbolX, symbolY)
+    if (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2) then 
+
+        -- if grid element has a player marker then skip
+        if (gridMatrix[gridMatrixX][gridMatrixY] ~= nil) then
+            return true
+        end
+
+        local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
+        playerSymbol.anchorX = 0
+        playerSymbol.anchorY = 0
+        playerSymbol.x = symbolX
+        playerSymbol.y = symbolY
+
+        displayAssets[displayAssetsIndex] = playerSymbol
+        displayAssetsIndex = displayAssetsIndex + 1
+
+        gridMatrix[gridMatrixX][gridMatrixY] = currentPlayerSymbol
+    end
+end
+
 local function tapListener(event)
 
     if (gameEnded) then
@@ -163,230 +229,24 @@ local function tapListener(event)
     end
 
     if (event.phase == "ended") then
-        -- FIRST ROW
-
-        if (event.x > 0 and event.x < 300 and event.y > 0 and event.y < 300) then 
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[0][0] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 10
-            playerSymbol.y = 10
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[0][0] = currentPlayerSymbol
-        end
         
-        if (event.x > 300 and event.x < 600 and event.y > 0 and event.y < 300) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[0][1] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 310
-            playerSymbol.y = 10
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[0][1] = currentPlayerSymbol
-        end
-
-        if (event.x > 600 and event.x < 900 and event.y > 150 and event.y < 300) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[0][2] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 610
-            playerSymbol.y = 10
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[0][2] = currentPlayerSymbol
-        end
-
-        --- SECOND ROW
-
-        if (event.x > 0 and event.x < 300 and event.y > 300 and event.y < 600) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[1][0] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 10
-            playerSymbol.y = 310
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[1][0] = currentPlayerSymbol
-        end
+        handlePlayerMove(event,   0, 300,   0, 300, 0, 0,  10,  10)
+        handlePlayerMove(event, 300, 600,   0, 300, 0, 1, 310,  10)
+        handlePlayerMove(event, 600, 900, 150, 300, 0, 2, 610,  10)
+        handlePlayerMove(event,   0, 300, 350, 600, 1, 0,  10, 310)
+        handlePlayerMove(event, 300, 600, 300, 600, 1, 1, 310, 310)
+        handlePlayerMove(event, 600, 900, 300, 600, 1, 2, 610, 310)
+        handlePlayerMove(event,   0, 300, 600, 900, 2, 0,  10, 610)
+        handlePlayerMove(event, 300, 600, 600, 900, 2, 1, 310, 610)
+        handlePlayerMove(event, 600, 900, 600, 900, 2, 2, 610, 610)
+    
+        handleWinCheckScenarios()
         
-        if (event.x > 300 and event.x < 600 and event.y > 300 and event.y < 600) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[1][1] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 310
-            playerSymbol.y = 310
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[1][1] = currentPlayerSymbol
-        end
-
-        if (event.x > 600 and event.x < 900 and event.y > 300 and event.y < 600) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[1][2] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 610
-            playerSymbol.y = 310
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[1][2] = currentPlayerSymbol
-        end
-
-        --- THIRD ROW
-
-        if (event.x > 0 and event.x < 300 and event.y > 600 and event.y < 900) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[2][0] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 10
-            playerSymbol.y = 610
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[2][0] = currentPlayerSymbol
-        end
-        
-        if (event.x > 300 and event.x < 600 and event.y > 600 and event.y < 900) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[2][1] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 310
-            playerSymbol.y = 610
-
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[2][1] = currentPlayerSymbol
-        end
-
-        if (event.x > 600 and event.x < 900 and event.y > 600 and event.y < 900) then    
-
-            -- if grid element has a player marker then skip
-            if (gridMatrix[2][2] ~= nil) then
-                return true
-            end
-
-            local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-            playerSymbol.anchorX = 0
-            playerSymbol.anchorY = 0
-            playerSymbol.x = 610
-            playerSymbol.y = 610
-            
-            displayAssets[displayAssetsIndex] = playerSymbol
-            displayAssetsIndex = displayAssetsIndex + 1
-
-            gridMatrix[2][2] = currentPlayerSymbol
-        end
-
-        
-
-        if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()
-            or WinCheck6() or WinCheck7() or WinCheck8()) then
-                print (" a win!")
-                gameEnded = true
-                gameEndedTime = getTime()
-
-                --background.fill.effect = "filter.crosshatch"
-
-                audio.setVolume(musicVolume)
-                audio.play(tadaMusic)
-
-                local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
-                wonImage.anchorX = 0
-                wonImage.anchorY = 0
-                wonImage.x = 50
-                wonImage.y = display.contentCenterY
-            
-                displayAssets[displayAssetsIndex] = wonImage
-                displayAssetsIndex = displayAssetsIndex + 1
-
-                timeFromWin = os.time(time)
-        elseif (noPlayAvailable()) then
-            gameEnded = true
-            gameEndedTime = getTime()
-
-            local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
-            noWinImage.anchorX = 0
-            noWinImage.anchorY = 0
-            noWinImage.x = 50
-            noWinImage.y = display.contentCenterY
-
-            displayAssets[displayAssetsIndex] = noWinImage
-            displayAssetsIndex = displayAssetsIndex + 1
-        else
-            -- switch player 
-            if (currentPlayerSymbol == "X") then
-                currentPlayerSymbol = "O"
-            else
-                currentPlayerSymbol = "X"
-            end
-        end
     end
     
     return true
 end
+
 
 local function keyboardListener(event)
     if (event.phase == "down") then
