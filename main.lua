@@ -9,8 +9,21 @@
 local gridMatrix = {}
 local gameEnded = false
 local currentPlayerSymbol = "X"
+local currentPlayerMoveEnded = true
 local displayAssets = {}
 local displayAssetsIndex = 0
+local cpuTurn = false
+
+local gridLookupInfo = {
+ {  0, 300,   0, 300, 0, 0,  10,  10},
+ {300, 600,   0, 300, 0, 1, 310,  10},
+ {600, 900, 150, 300, 0, 2, 610,  10},
+ {  0, 300, 350, 600, 1, 0,  10, 310},
+ {300, 600, 300, 600, 1, 1, 310, 310},
+ {600, 900, 300, 600, 1, 2, 610, 310},
+ {  0, 300, 600, 900, 2, 0,  10, 610},
+ {300, 600, 600, 900, 2, 1, 310, 610},
+ {600, 900, 600, 900, 2, 2, 610, 610}}
 
 local time = os.date('*t')
 local timeFromWin = os.time(time)
@@ -63,6 +76,7 @@ end
 local function ResetGame()
     initGridMatrix()
     currentPlayerSymbol = "X"
+    currentPlayerMoveEnded = true
     gameEnded = false
 
     if (displayAssetsIndex > 0) then
@@ -201,25 +215,85 @@ local function handleWinCheckScenarios()
     end
 end
 
-local function handlePlayerMove(event, x1, x2, y1, y2, gridMatrixX, gridMatrixY, symbolX, symbolY)
-    if (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2) then 
+local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, gridMatrixX, gridMatrixY, symbolX, symbolY)
 
-        -- if grid element has a player marker then skip
-        if (gridMatrix[gridMatrixX][gridMatrixY] ~= nil) then
-            return true
-        end
+    currentPlayerMoveEnded = false
 
-        local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
-        playerSymbol.anchorX = 0
-        playerSymbol.anchorY = 0
-        playerSymbol.x = symbolX
-        playerSymbol.y = symbolY
-
-        displayAssets[displayAssetsIndex] = playerSymbol
-        displayAssetsIndex = displayAssetsIndex + 1
-
-        gridMatrix[gridMatrixX][gridMatrixY] = currentPlayerSymbol
+    if (event ~= nil and not (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2)) then 
+        return true
     end
+
+    -- if grid element has a player marker then skip
+    if (gridMatrix[gridMatrixX][gridMatrixY] ~= nil) then
+        return true
+    end
+
+    local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
+    playerSymbol.anchorX = 0
+    playerSymbol.anchorY = 0
+    playerSymbol.x = symbolX
+    playerSymbol.y = symbolY
+
+    displayAssets[displayAssetsIndex] = playerSymbol
+    displayAssetsIndex = displayAssetsIndex + 1
+
+    gridMatrix[gridMatrixX][gridMatrixY] = currentPlayerSymbol
+    cpuTurn = not cpuTurn
+
+    currentPlayerMoveEnded = true
+end
+
+
+local function cpuPlayEasy()
+    local foundEmptySlot = false
+    local maxLoopCount = 0
+
+    local emptySlots = {}
+    local emptySlotsIndex = 0
+
+    for i = 0, 2 do
+        for j = 0, 2 do
+            if (gridMatrix[i][j] == nil) then
+                emptySlots[emptySlotsIndex] = {}
+                emptySlots[emptySlotsIndex][0] = i
+                emptySlots[emptySlotsIndex][1] = j
+                emptySlotsIndex = emptySlotsIndex + 1
+            end
+        end
+     end
+
+     
+     local randIndex = math.random(emptySlotsIndex - 1) - 1
+     print (emptySlots[randIndex][0])
+    local x = emptySlots[randIndex][0]
+    local y = emptySlots[randIndex][1]
+
+    print ('local x: ' .. x .. ', y: ' .. y)
+
+    if (gridMatrix[x][y] == nil) then
+        foundEmptySlot = true
+
+        local gridLookupInfoX = x + (3 * y) + 1
+        print(#gridLookupInfo[gridLookupInfoX])
+        print ("gridLookupInfoX: " .. gridLookupInfoX)
+        --{  0, 300,   0, 300, 0, 0,  10,  10},
+        handlePlayerMove('O',nil,
+            gridLookupInfo[gridLookupInfoX][1],
+            gridLookupInfo[gridLookupInfoX][2],
+            gridLookupInfo[gridLookupInfoX][3],
+            gridLookupInfo[gridLookupInfoX][4],
+            gridLookupInfo[gridLookupInfoX][5],
+            gridLookupInfo[gridLookupInfoX][6],
+            gridLookupInfo[gridLookupInfoX][7],
+            gridLookupInfo[gridLookupInfoX][8]
+        )
+        print ("x: " .. x .. ", y: " .. y)
+    end
+
+    x = math.random(3) - 1
+    y = math.random(3) - 1
+
+    maxLoopCount = maxLoopCount + 1
 end
 
 local function tapListener(event)
@@ -229,21 +303,25 @@ local function tapListener(event)
     end
 
     if (event.phase == "ended") then
-        
-        handlePlayerMove(event,   0, 300,   0, 300, 0, 0,  10,  10)
-        handlePlayerMove(event, 300, 600,   0, 300, 0, 1, 310,  10)
-        handlePlayerMove(event, 600, 900, 150, 300, 0, 2, 610,  10)
-        handlePlayerMove(event,   0, 300, 350, 600, 1, 0,  10, 310)
-        handlePlayerMove(event, 300, 600, 300, 600, 1, 1, 310, 310)
-        handlePlayerMove(event, 600, 900, 300, 600, 1, 2, 610, 310)
-        handlePlayerMove(event,   0, 300, 600, 900, 2, 0,  10, 610)
-        handlePlayerMove(event, 300, 600, 600, 900, 2, 1, 310, 610)
-        handlePlayerMove(event, 600, 900, 600, 900, 2, 2, 610, 610)
-    
-        handleWinCheckScenarios()
+
+        if (currentPlayerMoveEnded == true) then
+            --               event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
+            handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
+            handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
+            handlePlayerMove('X', event, 600, 900, 150, 300, 0, 2, 610,  10)
+            handlePlayerMove('X', event,   0, 300, 350, 600, 1, 0,  10, 310)
+            handlePlayerMove('X', event, 300, 600, 300, 600, 1, 1, 310, 310)
+            handlePlayerMove('X', event, 600, 900, 300, 600, 1, 2, 610, 310)
+            handlePlayerMove('X', event,   0, 300, 600, 900, 2, 0,  10, 610)
+            handlePlayerMove('X', event, 300, 600, 600, 900, 2, 1, 310, 610)
+            handlePlayerMove('X', event, 600, 900, 600, 900, 2, 2, 610, 610)
+
+            cpuPlayEasy()
+
+           handleWinCheckScenarios()
+        end
         
     end
-    
     return true
 end
 
@@ -266,6 +344,7 @@ local function keyboardListener(event)
         end
     end
 end
+
 
 local function onFrame(event)
     if (gameEnded and (getTime() - gameEndedTime) > 3) then
