@@ -14,6 +14,16 @@ local displayAssets = {}
 local displayAssetsIndex = 0
 local cpuTurn = false
 
+local r1 = false
+local r2 = false
+local r3 = false
+local r4 = false
+local r5 = false
+local r6 = false
+local r7 = false
+local r8 = false
+local r9 = false
+
 local gridLookupInfo = {
  {  0, 300,   0, 300, 0, 0,  10,  10},
  {300, 600,   0, 300, 0, 1, 310,  10},
@@ -221,13 +231,13 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
 
     if (event ~= nil and not (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2)) then 
         currentPlayerMoveEnded = true
-        return true
+        return false
     end
 
     -- if grid element has a player marker then skip
     if (gridMatrix[gridMatrixX][gridMatrixY] ~= nil) then
         currentPlayerMoveEnded = true
-        return true
+        return false
     end
 
     local playerSymbol =  display.newImageRect("assets/" .. currentPlayerSymbol .. ".png", 290, 290)
@@ -243,6 +253,8 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
     cpuTurn = not cpuTurn
 
     currentPlayerMoveEnded = true
+
+    return true
 end
 
 
@@ -314,21 +326,23 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (currentPlayerMoveEnded == true) then
+            
             --                    event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
-            handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
-            handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
-            handlePlayerMove('X', event, 600, 900, 150, 300, 0, 2, 610,  10)
-            handlePlayerMove('X', event,   0, 300, 350, 600, 1, 0,  10, 310)
-            handlePlayerMove('X', event, 300, 600, 300, 600, 1, 1, 310, 310)
-            handlePlayerMove('X', event, 600, 900, 300, 600, 1, 2, 610, 310)
-            handlePlayerMove('X', event,   0, 300, 600, 900, 2, 0,  10, 610)
-            handlePlayerMove('X', event, 300, 600, 600, 900, 2, 1, 310, 610)
-            handlePlayerMove('X', event, 600, 900, 600, 900, 2, 2, 610, 610)
+            r1 = handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
+            r2 = handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
+            r3 = handlePlayerMove('X', event, 600, 900, 150, 300, 0, 2, 610,  10)
+            r4 = handlePlayerMove('X', event,   0, 300, 350, 600, 1, 0,  10, 310)
+            r5 = handlePlayerMove('X', event, 300, 600, 300, 600, 1, 1, 310, 310)
+            r6 = handlePlayerMove('X', event, 600, 900, 300, 600, 1, 2, 610, 310)
+            r7 = handlePlayerMove('X', event,   0, 300, 600, 900, 2, 0,  10, 610)
+            r8 = handlePlayerMove('X', event, 300, 600, 600, 900, 2, 1, 310, 610)
+            r9 = handlePlayerMove('X', event, 600, 900, 600, 900, 2, 2, 610, 610)
 
-            cpuPlayEasy()
-
-            handleWinCheckScenarios()
-
+            -- just ensuring that there was a valid player move before attempting CPU move and win check
+            if (r1 or r2 or r3 or r4 or r5 or r6 or r7 or r8 or r9) then
+                cpuPlayEasy()
+                handleWinCheckScenarios()
+            end
         end
         
     end
