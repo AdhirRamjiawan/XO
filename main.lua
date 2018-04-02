@@ -205,12 +205,12 @@ local function handleWinCheckScenarios()
 
         displayAssets[displayAssetsIndex] = noWinImage
         displayAssetsIndex = displayAssetsIndex + 1
+    end
+
+    if (currentPlayerSymbol == 'X') then
+        currentPlayerSymbol = 'O'
     else
-        if (currentPlayerSymbol == 'X') then
-            currentPlayerSymbol = 'O'
-        else
-            currentPlayerSymbol = 'X'
-        end
+        currentPlayerSymbol = 'X'
     end
 end
 
@@ -241,6 +241,7 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
 
     gridMatrix[gridMatrixX][gridMatrixY] = currentPlayerSymbol
     cpuTurn = not cpuTurn
+
     currentPlayerMoveEnded = true
 end
 
