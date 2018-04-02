@@ -59,16 +59,18 @@ end
 
 local function noPlayAvailable()
 
-    print("no play available check")
+    --print("no play available check")
 
     for i = 0, 2 do
         for j = 0, 2 do
             if (gridMatrix[i][j] == nil) then
-                print("no play available!")
+                
                 return false
             end
         end
     end
+
+   -- print("no play available!")
 
     return true
 end
@@ -178,8 +180,6 @@ local function handleWinCheckScenarios()
             gameEnded = true
             gameEndedTime = getTime()
 
-            --background.fill.effect = "filter.crosshatch"
-
             audio.setVolume(musicVolume)
             audio.play(tadaMusic)
 
@@ -206,25 +206,27 @@ local function handleWinCheckScenarios()
         displayAssets[displayAssetsIndex] = noWinImage
         displayAssetsIndex = displayAssetsIndex + 1
     else
-        -- switch player 
-        if (currentPlayerSymbol == "X") then
-            currentPlayerSymbol = "O"
+        if (currentPlayerSymbol == 'X') then
+            currentPlayerSymbol = 'O'
         else
-            currentPlayerSymbol = "X"
+            currentPlayerSymbol = 'X'
         end
     end
 end
+
 
 local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, gridMatrixX, gridMatrixY, symbolX, symbolY)
 
     currentPlayerMoveEnded = false
 
     if (event ~= nil and not (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2)) then 
+        currentPlayerMoveEnded = true
         return true
     end
 
     -- if grid element has a player marker then skip
     if (gridMatrix[gridMatrixX][gridMatrixY] ~= nil) then
+        currentPlayerMoveEnded = true
         return true
     end
 
@@ -239,14 +241,11 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
 
     gridMatrix[gridMatrixX][gridMatrixY] = currentPlayerSymbol
     cpuTurn = not cpuTurn
-
     currentPlayerMoveEnded = true
 end
 
 
 local function cpuPlayEasy()
-    local foundEmptySlot = false
-    local maxLoopCount = 0
 
     local emptySlots = {}
     local emptySlotsIndex = 0
@@ -257,26 +256,34 @@ local function cpuPlayEasy()
                 emptySlots[emptySlotsIndex] = {}
                 emptySlots[emptySlotsIndex][0] = i
                 emptySlots[emptySlotsIndex][1] = j
+
+                --print(emptySlots[emptySlotsIndex][0] .. ';' .. emptySlots[emptySlotsIndex][1])
+
                 emptySlotsIndex = emptySlotsIndex + 1
-            end
+            end 
         end
      end
 
      
-     local randIndex = math.random(emptySlotsIndex - 1) - 1
-     print (emptySlots[randIndex][0])
+    local randIndex = 0
+    
+    if (emptySlotsIndex - 1 > 0) then
+        randIndex = math.random(emptySlotsIndex - 1) - 1
+    end
+    
+    if (emptySlots[randIndex] == nil) then
+        print ('randIndex is nil, returning')
+        return true
+    end
+
     local x = emptySlots[randIndex][0]
     local y = emptySlots[randIndex][1]
 
-    print ('local x: ' .. x .. ', y: ' .. y)
+    print ('local x: ' .. x .. ', y: ' .. y .. '. # of emptySlots: ' .. #emptySlots + 1)
 
-    if (gridMatrix[x][y] == nil) then
-        foundEmptySlot = true
-
-        local gridLookupInfoX = x + (3 * y) + 1
-        print(#gridLookupInfo[gridLookupInfoX])
+    --if (gridMatrix[x][y] == nil) then
+        local gridLookupInfoX = (x * 3) + y + 1
         print ("gridLookupInfoX: " .. gridLookupInfoX)
-        --{  0, 300,   0, 300, 0, 0,  10,  10},
         handlePlayerMove('O',nil,
             gridLookupInfo[gridLookupInfoX][1],
             gridLookupInfo[gridLookupInfoX][2],
@@ -287,16 +294,17 @@ local function cpuPlayEasy()
             gridLookupInfo[gridLookupInfoX][7],
             gridLookupInfo[gridLookupInfoX][8]
         )
-        print ("x: " .. x .. ", y: " .. y)
-    end
+    --end
 
-    x = math.random(3) - 1
-    y = math.random(3) - 1
-
-    maxLoopCount = maxLoopCount + 1
 end
 
 local function tapListener(event)
+
+    print ("click")
+    --print ("currentPlayerMoveEnded: ")
+    --print (currentPlayerMoveEnded)
+   -- print ("gameEnded")
+    --print (gameEnded)
 
     if (gameEnded) then
         return true
@@ -305,7 +313,7 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (currentPlayerMoveEnded == true) then
-            --               event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
+            --                    event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
             handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
             handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
             handlePlayerMove('X', event, 600, 900, 150, 300, 0, 2, 610,  10)
@@ -318,7 +326,8 @@ local function tapListener(event)
 
             cpuPlayEasy()
 
-           handleWinCheckScenarios()
+            handleWinCheckScenarios()
+
         end
         
     end
