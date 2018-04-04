@@ -8,6 +8,8 @@ local button_easy = nil
 local button_hard = nil
 local backgroundMusic = audio.loadSound("assets/music.ogg")
 
+local button_easy_animation = nil
+
 local musicVolume = 0.5
 local musicPlaying = true
 
@@ -36,6 +38,17 @@ local function keyboardListener(event)
     end
 end
 
+-- sprite listener function
+local function button_easy_spriteListener( event )
+
+    local thisSprite = event.target  -- "event.target" references the sprite
+    
+    if ( event.phase == "ended" ) then 
+        audio.stop(1)
+        composer.gotoScene("GameScene")
+    end
+end
+
 local function tapListener(event)
 
     print ("click")
@@ -43,8 +56,36 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (event.x >= 250 and event.x <= 650 and event.y >= 400 and event.y <= 600) then
-            audio.stop(1)
-            composer.gotoScene("GameScene")
+            local button_easy_SheetOptions = 
+            {
+                width = 400,
+                height = 200,
+                numFrames = 6
+            }
+
+            local sheet_button_easy = graphics.newImageSheet("assets/main_menu/button_easy_sprite_sheet.png", button_easy_SheetOptions)
+            local sequences_button_easy = {
+                {
+                    name = "button_easy_click",
+                    frames = {1,2,3,4,5,6},
+                    time = 600,
+                    loopCount = 2,
+                    loopDirection = "forward"
+                }
+            }
+
+            button_easy:removeSelf()
+
+            button_easy_animation = display.newSprite(sheet_button_easy, sequences_button_easy)
+            button_easy_animation.anchorX = 0
+            button_easy_animation.anchorY = 0
+            button_easy_animation.x = 250
+            button_easy_animation.y = 400
+            
+            button_easy_animation:addEventListener( "sprite", button_easy_spriteListener )
+
+            button_easy_animation:setSequence("button_easy_click")
+            button_easy_animation:play()
         end
 
     end
