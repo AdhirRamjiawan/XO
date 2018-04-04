@@ -8,6 +8,7 @@ local button_easy = nil
 local button_hard = nil
 local backgroundMusic = audio.loadSound("assets/music.ogg")
 
+local logo_animation = nil
 local button_easy_animation = nil
 
 local musicVolume = 0.5
@@ -92,17 +93,49 @@ local function tapListener(event)
     return true
 end
 
+function setupLogoAnimation()
+    local logo_SheetOptions = 
+    {
+        width = 600,
+        height = 200,
+        numFrames = 8
+    }
+
+    local sheet_logo = graphics.newImageSheet("assets/main_menu/logo_sprite_sheet.png", logo_SheetOptions)
+    local sequences_logo_animation = {
+        {
+            name = "logo_sprite",
+            frames = {1,2,3,4,5,6,7,8},
+            time = 600,
+            loopCount = 0,
+            loopDirection = "forward"
+        }
+    }
+
+    logo_animation = display.newSprite(sheet_logo, sequences_logo_animation)
+    logo_animation.anchorX = 0
+    logo_animation.anchorY = 0
+    logo_animation.x = 150
+    logo_animation.y = 50
+    
+    logo_animation:setSequence("button_easy_click")
+    logo_animation:play()
+end
+
 function MainMenuLogicModule.CreateMainMenu()
    
     background = display.newImageRect("assets/background.jpg", 900, 900)
     background.anchorX = 0
     background.anchorY = 0
 
-    logo = display.newImageRect("assets/main_menu/logo.png", 600, 200)
-    logo.anchorX = 0
-    logo.anchorY = 0
-    logo.x = 150
-    logo.y = 50
+    --logo = display.newImageRect("assets/main_menu/logo.png", 600, 200)
+    --logo.anchorX = 0
+    --logo.anchorY = 0
+    --logo.x = 150
+    --logo.y = 50
+    
+    setupLogoAnimation()
+
 
     button_easy = display.newImageRect("assets/main_menu/button_easy.png", 400, 200)
     button_easy.anchorX = 0
