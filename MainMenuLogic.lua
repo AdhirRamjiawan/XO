@@ -12,6 +12,9 @@ local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 local logo_animation = nil
 local button_easy_animation = nil
 
+local gameSelected = false
+local backgroundEffectsCounter = 0
+
 local musicVolume = 0.5
 local musicPlaying = true
 
@@ -58,6 +61,7 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (event.x >= 250 and event.x <= 650 and event.y >= 400 and event.y <= 600) then
+            gameSelected = true
 
             audio.play(clickMusic)
 
@@ -126,8 +130,20 @@ function setupLogoAnimation()
     logo_animation:play()
 end
 
+local function onFrame(event)
+    
+    if (gameSelected and (backgroundEffectsCounter < 150)) then
+        background.fill.effect = "filter.pixelate"
+        background.fill.effect.numPixels = backgroundEffectsCounter
+
+        backgroundEffectsCounter = backgroundEffectsCounter + 1
+    end
+end
+
+
+
 function MainMenuLogicModule.CreateMainMenu()
-   
+    
     background = display.newImageRect("assets/background.jpg", 900, 900)
     background.anchorX = 0
     background.anchorY = 0
@@ -155,7 +171,7 @@ function MainMenuLogicModule.CreateMainMenu()
 
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)
-    --Runtime:addEventListener("enterFrame", onFrame)
+    Runtime:addEventListener("enterFrame", onFrame)
 end
 
 return MainMenuLogicModule

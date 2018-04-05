@@ -218,6 +218,8 @@ local function handleWinCheckScenarios()
 
         displayAssets[displayAssetsIndex] = noWinImage
         displayAssetsIndex = displayAssetsIndex + 1
+
+        audio.play(noWinMusic)
     end
 
     
