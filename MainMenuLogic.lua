@@ -7,6 +7,7 @@ local logo = nil
 local button_easy = nil
 local button_hard = nil
 local backgroundMusic = audio.loadSound("assets/main_menu/main_menu_music.ogg")
+local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 
 local logo_animation = nil
 local button_easy_animation = nil
@@ -57,6 +58,9 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (event.x >= 250 and event.x <= 650 and event.y >= 400 and event.y <= 600) then
+
+            audio.play(clickMusic)
+
             local button_easy_SheetOptions = 
             {
                 width = 400,

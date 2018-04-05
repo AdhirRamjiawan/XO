@@ -36,13 +36,15 @@ local background = nil
 local grid = nil
 
 local backgroundMusic = audio.loadSound("assets/music.ogg")
-local tadaMusic = audio.loadSound("assets/tada.mp3")
+local winMusic = audio.loadSound("assets/win.ogg")
+local noWinMusic = audio.loadSound("assets/nowin.ogg")
+local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 
 local musicVolume = 0.5
 local musicPlaying = true
 
 audio.setVolume(musicVolume)
-audio.play(backgroundMusic)
+audio.play(backgroundMusic, { loops = -1})
 
 local function getTime()
     local time = os.date('*t')
@@ -185,7 +187,12 @@ local function handleWinCheckScenarios()
             gameEndedTime = getTime()
 
             audio.setVolume(musicVolume)
-            audio.play(tadaMusic)
+
+            if (currentPlayerSymbol == 'X') then
+                audio.play(winMusic)
+            else
+                audio.play(noWinMusic)
+            end
 
             local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
             wonImage.anchorX = 0
@@ -318,7 +325,8 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (currentPlayerMoveEnded == true) then
-
+            audio.play(clickMusic)
+            
             --if (currentPlayerSymbol == 'X') then
             --    currentPlayerSymbol = 'O'
             --else
