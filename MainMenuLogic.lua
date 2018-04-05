@@ -6,7 +6,7 @@ local background = nil
 local logo = nil
 local button_easy = nil
 local button_hard = nil
-local backgroundMusic = audio.loadSound("assets/music.ogg")
+local backgroundMusic = audio.loadSound("assets/main_menu/main_menu_music.ogg")
 
 local logo_animation = nil
 local button_easy_animation = nil
