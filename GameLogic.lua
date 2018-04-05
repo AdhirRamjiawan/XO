@@ -197,6 +197,8 @@ local function handleWinCheckScenarios()
             displayAssetsIndex = displayAssetsIndex + 1
 
             timeFromWin = os.time(time)
+
+            return true
     elseif (noPlayAvailable()) then
         gameEnded = true
         gameEndedTime = getTime()
@@ -211,16 +213,13 @@ local function handleWinCheckScenarios()
         displayAssetsIndex = displayAssetsIndex + 1
     end
 
-    if (currentPlayerSymbol == 'X') then
-        currentPlayerSymbol = 'O'
-    else
-        currentPlayerSymbol = 'X'
-    end
+    
+
+    return false
 end
 
 
 local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, gridMatrixX, gridMatrixY, symbolX, symbolY)
-
     currentPlayerMoveEnded = false
 
     if (event ~= nil and not (event.x > x1 and event.x < x2 and event.y > y1 and event.y < y2)) then 
@@ -253,7 +252,6 @@ end
 
 
 local function cpuPlayEasy()
-
     local emptySlots = {}
     local emptySlotsIndex = 0
 
@@ -286,11 +284,11 @@ local function cpuPlayEasy()
     local x = emptySlots[randIndex][0]
     local y = emptySlots[randIndex][1]
 
-    print ('local x: ' .. x .. ', y: ' .. y .. '. # of emptySlots: ' .. #emptySlots + 1)
+    --print ('local x: ' .. x .. ', y: ' .. y .. '. # of emptySlots: ' .. #emptySlots + 1)
 
     --if (gridMatrix[x][y] == nil) then
         local gridLookupInfoX = (x * 3) + y + 1
-        print ("gridLookupInfoX: " .. gridLookupInfoX)
+        --print ("gridLookupInfoX: " .. gridLookupInfoX)
         handlePlayerMove('O',nil,
             gridLookupInfo[gridLookupInfoX][1],
             gridLookupInfo[gridLookupInfoX][2],
@@ -307,7 +305,7 @@ end
 
 local function tapListener(event)
 
-    print ("click")
+    --print ("click")
     --print ("currentPlayerMoveEnded: ")
     --print (currentPlayerMoveEnded)
    -- print ("gameEnded")
@@ -320,7 +318,14 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (currentPlayerMoveEnded == true) then
-            
+
+            --if (currentPlayerSymbol == 'X') then
+            --    currentPlayerSymbol = 'O'
+            --else
+                currentPlayerSymbol = 'X'
+            --end
+
+            print ("current play: " .. currentPlayerSymbol)
             --                    event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
             r1 = handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
             r2 = handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
@@ -332,10 +337,19 @@ local function tapListener(event)
             r8 = handlePlayerMove('X', event, 300, 600, 600, 900, 2, 1, 310, 610)
             r9 = handlePlayerMove('X', event, 600, 900, 600, 900, 2, 2, 610, 610)
 
-            -- just ensuring that there was a valid player move before attempting CPU move and win check
-            if (r1 or r2 or r3 or r4 or r5 or r6 or r7 or r8 or r9) then
-                cpuPlayEasy()
-                handleWinCheckScenarios()
+            if (handleWinCheckScenarios() == false) then
+                -- just ensuring that there was a valid player move before attempting CPU move and win check
+                if (r1 or r2 or r3 or r4 or r5 or r6 or r7 or r8 or r9) then
+                    --if (currentPlayerSymbol == 'X') then
+                        currentPlayerSymbol = 'O'
+                    --else
+                    --    currentPlayerSymbol = 'X'
+                    --end
+
+                    print ("current play: " .. currentPlayerSymbol)
+                    cpuPlayEasy()
+                    handleWinCheckScenarios()
+                end
             end
         end
         
