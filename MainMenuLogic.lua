@@ -163,11 +163,11 @@ function MainMenuLogicModule.CreateMainMenu()
     button_easy.x = 250
     button_easy.y = 400
 
-    button_hard = display.newImageRect("assets/main_menu/button_hard.png", 400, 200)
-    button_hard.anchorX = 0
-    button_hard.anchorY = 0
-    button_hard.x = 250
-    button_hard.y = 650
+   -- button_hard = display.newImageRect("assets/main_menu/button_hard.png", 400, 200)
+    --button_hard.anchorX = 0
+    --button_hard.anchorY = 0
+    --button_hard.x = 250
+    --button_hard.y = 650
 
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)
