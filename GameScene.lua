@@ -1,5 +1,7 @@
 local composer = require( "composer" )
 local GameLogic = require("GameLogic")
+
+local gameMode = "easy"
  
 local scene = composer.newScene()
  
@@ -20,7 +22,7 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    gameMode = event.params.gameMode
 end
  
  
@@ -35,7 +37,7 @@ function scene:show( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
-        GameLogic.StartGame()
+        GameLogic.StartGame(gameMode)
     end
 end
  

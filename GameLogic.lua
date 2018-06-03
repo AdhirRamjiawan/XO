@@ -7,6 +7,7 @@ local currentPlayerMoveEnded = true
 local displayAssets = {}
 local displayAssetsIndex = 0
 local cpuTurn = false
+local gameMode = "easy"
 
 local r1 = false
 local r2 = false
@@ -259,6 +260,32 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
     return true
 end
 
+local function cpuPlayHard()
+    -- Blocking move
+    -- Winning move
+    -- Useless move
+
+
+    -- Useless move
+    -- |0| |1|     |0|1|1|
+    -- | |0| |     | |0| |
+    -- | |1| |     | |1| |
+
+    -- BLocking and winning move
+    -- |0| |1|     |0| |1|
+    -- | |0| |     | |0| |
+    -- | |1| |     | |1|1|
+
+    -- winning
+    -- |0| |1|     |0| |1|
+    -- | |0| |     | |0|1|
+    -- | |1| |     | |1| |
+
+    -- blocking
+    -- |0| | |     |0| | |
+    -- |1|0| |     |1|0| |
+    -- | | | |     | | |1|
+end
 
 local function cpuPlayEasy()
     local emptySlots = {}
@@ -357,7 +384,13 @@ local function tapListener(event)
                     --end
 
                     print ("current play: " .. currentPlayerSymbol)
-                    cpuPlayEasy()
+
+                    if (gameMode == "easy") then
+                        cpuPlayEasy()
+                    elseif (gameMode == "hard") then
+                        cpuPlayHard()
+                    end
+
                     handleWinCheckScenarios()
                 end
             end
@@ -394,7 +427,8 @@ local function onFrame(event)
     end
 end
 
-function GameLogicModule.StartGame()
+function GameLogicModule.StartGame(paramGameMode)
+    gameMode = paramGameMode
     ResetGame()
 
     background:addEventListener("touch", tapListener)
