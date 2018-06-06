@@ -260,32 +260,7 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
     return true
 end
 
-local function cpuPlayHard()
-    -- Blocking move
-    -- Winning move
-    -- Useless move
 
-
-    -- Useless move
-    -- |0| |1|     |0|1|1|
-    -- | |0| |     | |0| |
-    -- | |1| |     | |1| |
-
-    -- BLocking and winning move
-    -- |0| |1|     |0| |1|
-    -- | |0| |     | |0| |
-    -- | |1| |     | |1|1|
-
-    -- winning
-    -- |0| |1|     |0| |1|
-    -- | |0| |     | |0|1|
-    -- | |1| |     | |1| |
-
-    -- blocking
-    -- |0| | |     |0| | |
-    -- |1|0| |     |1|0| |
-    -- | | | |     | | |1|
-end
 
 local function cpuPlayEasy()
     local emptySlots = {}
@@ -337,6 +312,69 @@ local function cpuPlayEasy()
         )
     --end
 
+end
+
+local function cpuPlayHard()
+
+    local gridLookupInfoX = 0
+    local foundPlacement = false
+
+    -- blocking moves going across one each row, left to right
+    for i = 0,2 do
+        local currentWinPlacementCount = 0
+        local emptySlot = nil
+
+        if (gridMatrix[i][0] == "X" and gridMatrix[i][1] == "X") then
+            gridLookupInfoX = (i * 3) + 2 + 1
+            foundPlacement = true
+
+            handlePlayerMove('O',nil,
+                gridLookupInfo[gridLookupInfoX][1],
+                gridLookupInfo[gridLookupInfoX][2],
+                gridLookupInfo[gridLookupInfoX][3],
+                gridLookupInfo[gridLookupInfoX][4],
+                gridLookupInfo[gridLookupInfoX][5], -- x
+                gridLookupInfo[gridLookupInfoX][6], -- y
+                gridLookupInfo[gridLookupInfoX][7],
+                gridLookupInfo[gridLookupInfoX][8]
+            )
+        end
+    end
+
+
+    -- blocking movees, for each column, top to bottom
+    for j = 0,2 do
+        local currentWinPlacementCount = 0
+        local emptySlot = nil
+
+        if (gridMatrix[0][j] == "X" and gridMatrix[1][j] == "X") then
+            gridLookupInfoX = (2 * 3) + j + 1
+            foundPlacement = true
+
+            handlePlayerMove('O',nil,
+                gridLookupInfo[gridLookupInfoX][1],
+                gridLookupInfo[gridLookupInfoX][2],
+                gridLookupInfo[gridLookupInfoX][3],
+                gridLookupInfo[gridLookupInfoX][4],
+                gridLookupInfo[gridLookupInfoX][5], -- x
+                gridLookupInfo[gridLookupInfoX][6], -- y
+                gridLookupInfo[gridLookupInfoX][7],
+                gridLookupInfo[gridLookupInfoX][8]
+            )
+        end
+    end
+
+    -- need middle slot blocking moves
+
+    -- need diagonal blocking moves
+
+
+    -- need to implement row, col and diagonal winning moves
+
+    if (foundPlacement == false) then
+        print("finding an easy CPU play!")
+        cpuPlayEasy()
+    end
 end
 
 local function tapListener(event)
@@ -428,6 +466,7 @@ local function onFrame(event)
 end
 
 function GameLogicModule.StartGame(paramGameMode)
+    print (paramGameMode)
     gameMode = paramGameMode
     ResetGame()
 

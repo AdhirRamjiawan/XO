@@ -55,10 +55,12 @@ local function button_easy_spriteListener( event )
 end
 
 local function button_hard_tap(event)
-    if (event.phase == "ended") then
+    print("hard 1")
+    --if (event.phase == "ended") then
+        print("hard 2")
         audio.stop(1)
         composer.gotoScene("GameScene", { params = { gameMode = "hard" }})
-    end
+   -- end
 end
 
 local function tapListener(event)
