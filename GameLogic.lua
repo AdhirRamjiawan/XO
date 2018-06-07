@@ -328,6 +328,7 @@ local function cpuPlayHard()
         local isYMove = false
 
         -- blocking moves going across one each row, left <-> right
+        -- Row moves
         if (gridMatrix[i][0] == "X" and gridMatrix[i][2] == "X") then
             tmpX = 1
             makeMove = true
@@ -340,6 +341,7 @@ local function cpuPlayHard()
             tmpX = 2
             makeMove = true
             isYMove = false
+        -- Column moves
         elseif (gridMatrix[0][i] == "X" and gridMatrix[2][i] == "X") then
             tmpY = 1
             makeMove = true
@@ -352,6 +354,7 @@ local function cpuPlayHard()
             tmpY = 2
             makeMove = true
             isYMove = true
+
         else
             makeMove = false
         end
@@ -375,17 +378,41 @@ local function cpuPlayHard()
                 )
         end
 
-
     end
 
+    -- diagonal moves
+    if (gridMatrix[0][0] == "X" and gridMatrix[1][1] == "X") then
+        tmpX = 2
+        tmpY = 2
+        makeMove = true
+    elseif (gridMatrix[0][2] == "X" and gridMatrix[1][1] == "X") then
+        tmpX = 0
+        tmpY = 2
+        makeMove = true
+    elseif (gridMatrix[2][0] == "X" and gridMatrix[1][1] == "X") then
+        tmpX = 2
+        tmpY = 0
+        makeMove = true
+    elseif (gridMatrix[2][2] == "X" and gridMatrix[1][1] == "X") then
+        tmpX = 0
+        tmpY = 0
+        makeMove = true
+    end
 
-    -- blocking moves for each column, top  <-> bottom
-
-
-    -- need diagonal blocking moves
-
-
-    -- need to implement row, col and diagonal winning moves
+    if (makeMove == true) then
+        gridLookupInfoX = (tmpY * 3) + tmpX + 1 -- gets correct lookup
+        
+        handlePlayerMove('O',nil,
+                gridLookupInfo[gridLookupInfoX][1],
+                gridLookupInfo[gridLookupInfoX][2],
+                gridLookupInfo[gridLookupInfoX][3],
+                gridLookupInfo[gridLookupInfoX][4],
+                gridLookupInfo[gridLookupInfoX][5], -- x
+                gridLookupInfo[gridLookupInfoX][6], -- y
+                gridLookupInfo[gridLookupInfoX][7],
+                gridLookupInfo[gridLookupInfoX][8]
+            )
+    end
 
     if (makeMove == false) then
         print("finding an easy CPU play!")
