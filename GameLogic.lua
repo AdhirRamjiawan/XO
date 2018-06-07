@@ -317,61 +317,77 @@ end
 local function cpuPlayHard()
 
     local gridLookupInfoX = 0
-    local foundPlacement = false
+    local makeMove = false
 
-    -- blocking moves going across one each row, left to right
+    
     for i = 0,2 do
         local currentWinPlacementCount = 0
         local emptySlot = nil
+        local tmpX = 0
+        local tmpY = 0
+        local isYMove = false
 
-        if (gridMatrix[i][0] == "X" and gridMatrix[i][1] == "X") then
-            gridLookupInfoX = (i * 3) + 2 + 1
-            foundPlacement = true
+        -- blocking moves going across one each row, left <-> right
+        if (gridMatrix[i][0] == "X" and gridMatrix[i][2] == "X") then
+            tmpX = 1
+            makeMove = true
+            isYMove = false
+        elseif (gridMatrix[i][1] == "X" and gridMatrix[i][2] == "X") then
+            tmpX = 0
+            makeMove = true
+            isYMove = false
+        elseif (gridMatrix[i][0] == "X" and gridMatrix[i][1] == "X") then
+            tmpX = 2
+            makeMove = true
+            isYMove = false
+        elseif (gridMatrix[0][i] == "X" and gridMatrix[2][i] == "X") then
+            tmpY = 1
+            makeMove = true
+            isYMove = true
+        elseif (gridMatrix[1][i] == "X" and gridMatrix[2][i] == "X") then
+            tmpY = 0
+            makeMove = true
+            isYMove = true
+        elseif (gridMatrix[0][i] == "X" and gridMatrix[1][i] == "X") then
+            tmpY = 2
+            makeMove = true
+            isYMove = true
+        else
+            makeMove = false
+        end
+
+        if (makeMove == true) then
+            if (isYMove == false) then
+                gridLookupInfoX = (i * 3) + tmpX + 1 -- gets correct lookup
+            else
+                gridLookupInfoX = (tmpY * 3) + i + 1 -- gets correct lookup
+            end
 
             handlePlayerMove('O',nil,
-                gridLookupInfo[gridLookupInfoX][1],
-                gridLookupInfo[gridLookupInfoX][2],
-                gridLookupInfo[gridLookupInfoX][3],
-                gridLookupInfo[gridLookupInfoX][4],
-                gridLookupInfo[gridLookupInfoX][5], -- x
-                gridLookupInfo[gridLookupInfoX][6], -- y
-                gridLookupInfo[gridLookupInfoX][7],
-                gridLookupInfo[gridLookupInfoX][8]
-            )
+                    gridLookupInfo[gridLookupInfoX][1],
+                    gridLookupInfo[gridLookupInfoX][2],
+                    gridLookupInfo[gridLookupInfoX][3],
+                    gridLookupInfo[gridLookupInfoX][4],
+                    gridLookupInfo[gridLookupInfoX][5], -- x
+                    gridLookupInfo[gridLookupInfoX][6], -- y
+                    gridLookupInfo[gridLookupInfoX][7],
+                    gridLookupInfo[gridLookupInfoX][8]
+                )
         end
+
+
     end
 
 
-    -- blocking movees, for each column, top to bottom
-    for j = 0,2 do
-        local currentWinPlacementCount = 0
-        local emptySlot = nil
+    -- blocking moves for each column, top  <-> bottom
 
-        if (gridMatrix[0][j] == "X" and gridMatrix[1][j] == "X") then
-            gridLookupInfoX = (2 * 3) + j + 1
-            foundPlacement = true
-
-            handlePlayerMove('O',nil,
-                gridLookupInfo[gridLookupInfoX][1],
-                gridLookupInfo[gridLookupInfoX][2],
-                gridLookupInfo[gridLookupInfoX][3],
-                gridLookupInfo[gridLookupInfoX][4],
-                gridLookupInfo[gridLookupInfoX][5], -- x
-                gridLookupInfo[gridLookupInfoX][6], -- y
-                gridLookupInfo[gridLookupInfoX][7],
-                gridLookupInfo[gridLookupInfoX][8]
-            )
-        end
-    end
-
-    -- need middle slot blocking moves
 
     -- need diagonal blocking moves
 
 
     -- need to implement row, col and diagonal winning moves
 
-    if (foundPlacement == false) then
+    if (makeMove == false) then
         print("finding an easy CPU play!")
         cpuPlayEasy()
     end
