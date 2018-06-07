@@ -21,7 +21,7 @@ settings =
 	},
 
 	android = {
-		versionCode ="10"
+		versionCode ="11"
 	}
 	
 }
