@@ -1,0 +1,5 @@
+2018-06-12
+==========
+
+1. Start an easy game
+2.  play bottom middle. Game will restart

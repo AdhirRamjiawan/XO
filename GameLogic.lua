@@ -9,6 +9,7 @@ local displayAssetsIndex = 0
 local cpuTurn = false
 local gameMode = "easy"
 
+
 local r1 = false
 local r2 = false
 local r3 = false
@@ -509,6 +510,7 @@ local function onFrame(event)
 end
 
 function GameLogicModule.StartGame(paramGameMode)
+
     print (paramGameMode)
     gameMode = paramGameMode
     ResetGame()

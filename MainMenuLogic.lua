@@ -178,7 +178,7 @@ function MainMenuLogicModule.CreateMainMenu()
     button_hard.x = 250
     button_hard.y = 650
 
-    button_hard:addEventListener("tap", button_hard_tap)
+    button_hard:addEventListener("touch", button_hard_tap)
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)
     Runtime:addEventListener("enterFrame", onFrame)
