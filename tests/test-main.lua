@@ -2,9 +2,9 @@
 
 local grid = {}
 
-grid[1] = {"O", "X", "O"}
-grid[2] = {"O", "O", "X"}
-grid[3] = {"X", "X", "O"}
+grid[1] = {"X", "O", "O"}
+grid[2] = {"X", "X", nil}
+grid[3] = {"X", nil, nil}
 
 local function makeMoveList(_grid)
     local moveList = {}
@@ -18,13 +18,12 @@ local function makeMoveList(_grid)
 
     -- each column
     for count = 1, 3 do
-        local tmpCol = {}
-
+        moveList[globalCount] = {}
+        
         for count2 = 1, 3 do
-            tmpCol[count2] = _grid[count][count2]
+            moveList[globalCount][count2] = _grid[count2][count]
         end
-
-        moveList[globalCount] = tmpCol
+        
         globalCount = globalCount + 1
     end
 
@@ -40,18 +39,37 @@ end
 
 local moveList = makeMoveList(grid)
 
+local function displayMoveList(_moveList)
+    
+    for i = 1, #_moveList do
+        local str = ""
+
+        for j = 1, 3 do
+            if _moveList[i][j] ~= nil then
+                str = str .. "," .. _moveList[i][j]
+            else
+                str = str .. ",nil"
+            end
+        end
+
+        print(str)
+    end
+end
+
+displayMoveList(moveList)
+
 local function checkWinsOnMoveList(_moveList)
     local winSymbol = nil
 
-    for i =1, #moveList  do
+    for i =1, #_moveList  do
         if winSymbol == nil then
             local xCount = 0
             local oCount = 0
 
             for j =1, 3 do
-                if _moveList[i] ~= nil and _moveList[i][j] == "X" then
+                if _moveList[i][j] == "X" then
                     xCount = xCount + 1
-                elseif _moveList[i] ~= nil and _moveList[i][j] == "O" then
+                elseif  _moveList[i][j] == "O" then
                     oCount = oCount + 1
                 end
 
@@ -72,7 +90,7 @@ local function checkWinsOnMoveList(_moveList)
     return winSymbol
 end
 
-local result = checkWinsOnMoveList(moveList)
+--local result = checkWinsOnMoveList(moveList)
 
 print ("winner is: ")
 print (result)

@@ -21,15 +21,15 @@ local r8 = false
 local r9 = false
 
 local gridLookupInfo = {
- {  0, 300,   0, 300, 0, 0,  10,  10},
- {300, 600,   0, 300, 0, 1, 310,  10},
- {600, 900, 150, 300, 0, 2, 610,  10},
- {  0, 300, 350, 600, 1, 0,  10, 310},
- {300, 600, 300, 600, 1, 1, 310, 310},
- {600, 900, 300, 600, 1, 2, 610, 310},
- {  0, 300, 600, 900, 2, 0,  10, 610},
- {300, 600, 600, 900, 2, 1, 310, 610},
- {600, 900, 600, 900, 2, 2, 610, 610}}
+ {  0, 300,   0, 300, 1, 1,  10,  10},
+ {300, 600,   0, 300, 1, 2, 310,  10},
+ {600, 900, 150, 300, 1, 3, 610,  10},
+ {  0, 300, 350, 600, 2, 1,  10, 310},
+ {300, 600, 300, 600, 2, 2, 310, 310},
+ {600, 900, 300, 600, 2, 3, 610, 310},
+ {  0, 300, 600, 900, 3, 1,  10, 610},
+ {300, 600, 600, 900, 3, 2, 310, 610},
+ {600, 900, 600, 900, 3, 3, 610, 610}}
 
 local time = os.date('*t')
 local timeFromWin = os.time(time)
@@ -56,21 +56,17 @@ end
 
 local function initGridMatrix()
     gridMatrix = {}
-    for i = 0, 2 do
-        gridMatrix[i] = {}
-
-        for j = 0, 2 do
-            gridMatrix[i][j] = nil
-        end
-    end
+    gridMatrix[1] = {nil, nil, nil}
+    gridMatrix[2] = {nil, nil, nil}
+    gridMatrix[3] = {nil, nil, nil}
 end
 
 local function noPlayAvailable()
 
     --print("no play available check")
 
-    for i = 0, 2 do
-        for j = 0, 2 do
+    for i = 1, 3 do
+        for j = 1, 3 do
             if (gridMatrix[i][j] == nil) then
                 
                 return false
@@ -115,88 +111,94 @@ local function ResetGame()
     end
 end
 
--- top left diagonal check
-local function WinCheck1()
-    local result = gridMatrix[0][0] ~= nil and
-    gridMatrix[1][1] == gridMatrix[0][0] and
-    gridMatrix[2][2] == gridMatrix[0][0]
+local function makeMoveList(_grid)
+    local moveList = {}
+    local globalCount = 1
 
-    return result
+    -- each row
+    for count = 1, 3 do
+        moveList[globalCount] = _grid[count]
+        globalCount = globalCount + 1
+    end
+
+    -- each column
+    for count = 1, 3 do
+        moveList[globalCount] = {}
         
+        for count2 = 1, 3 do
+            moveList[globalCount][count2] = _grid[count2][count]
+        end
+        
+        globalCount = globalCount + 1
+    end
+
+    -- diagonals
+    moveList[globalCount] = {_grid[1][1], _grid[2][2], _grid[3][3]}
+    
+    globalCount = globalCount + 1
+
+    moveList[globalCount] = {_grid[1][3], _grid[2][2], _grid[3][1]}
+
+    return moveList
 end
 
--- bottom left diagonal check
-local function WinCheck2()
-    return gridMatrix[2][0] ~= nil and
-        gridMatrix[1][1] == gridMatrix[2][0] and
-        gridMatrix[0][2] == gridMatrix[2][0]
-end
+local function checkWinsOnMoveList(_moveList)
+    local winSymbol = nil
 
--- first column check
-local function WinCheck3()
-    return
-        gridMatrix[0][0] ~= nil and
-        gridMatrix[1][0] == gridMatrix[0][0] and
-        gridMatrix[2][0] == gridMatrix[0][0]
-end
+    for i =1, #_moveList  do
+        if winSymbol == nil then
+            local xCount = 0
+            local oCount = 0
 
--- second column check
-local function WinCheck4()
-    return 
-        gridMatrix[0][1] ~= nil and
-        gridMatrix[1][1] == gridMatrix[0][1] and
-        gridMatrix[2][1] == gridMatrix[0][1]
-end
+            for j =1, 3 do
+                if _moveList[i][j] == "X" then
+                    xCount = xCount + 1
+                elseif _moveList[i][j] == "O" then
+                    oCount = oCount + 1
+                end
+            end
 
--- third column check
-local function WinCheck5()
-    return
-        gridMatrix[0][2] ~= nil and
-        gridMatrix[1][2] == gridMatrix[0][2] and
-        gridMatrix[2][2] == gridMatrix[0][2]
-end
+            print('xCount : ' .. xCount)
+            print('oCount : ' .. oCount)
+            print(' --- ')
 
--- first row check
-local function WinCheck6()
-    return
-        gridMatrix[0][0] ~= nil and
-        gridMatrix[0][1] == gridMatrix[0][0] and
-        gridMatrix[0][2] == gridMatrix[0][0]
-end
 
--- second row check
-local function WinCheck7()
-    return
-        gridMatrix[1][0] ~= nil and
-        gridMatrix[1][1] == gridMatrix[1][0] and
-        gridMatrix[1][2] == gridMatrix[1][0]
-end
+            if (xCount == 3) then
+                winSymbol = "X"
+            elseif (oCount == 3) then
+                winSymbol = "O"
+            end
+        end
+    end
 
--- third row check
-local function WinCheck8()
-    return
-        gridMatrix[2][0] ~= nil and
-        gridMatrix[2][1] == gridMatrix[2][0] and
-        gridMatrix[2][2] == gridMatrix[2][0]
+    return winSymbol
 end
 
 
 local function handleWinCheckScenarios()
-    if (WinCheck1() or WinCheck2() or WinCheck3() or WinCheck4() or WinCheck5()
-        or WinCheck6() or WinCheck7() or WinCheck8()) then
+    local moveList = makeMoveList(gridMatrix)
+    local winSymbol = checkWinsOnMoveList(moveList)
+
+    if winSymbol ~= nil then
+        print ("winsymbol " .. winSymbol)
+    else
+        print ("win symbol nil")
+    end
+
+    if winSymbol ~= nil then
             print (" a win!")
             gameEnded = true
             gameEndedTime = getTime()
 
             audio.setVolume(musicVolume)
 
-            if (currentPlayerSymbol == 'X') then
+            if (winSymbol == 'X') then
                 audio.play(winMusic)
             else
                 audio.play(noWinMusic)
             end
 
-            local wonImage = display.newImageRect("assets/".. currentPlayerSymbol .."_has_won.png", 800, 300)
+            local wonImage = display.newImageRect("assets/".. winSymbol .."_has_won.png", 800, 300)
             wonImage.anchorX = 0
             wonImage.anchorY = 0
             wonImage.x = 50
@@ -223,8 +225,6 @@ local function handleWinCheckScenarios()
 
         audio.play(noWinMusic)
     end
-
-    
 
     return false
 end
@@ -265,42 +265,33 @@ end
 
 local function cpuPlayEasy()
     local emptySlots = {}
-    local emptySlotsIndex = 0
+    local emptySlotsIndex = 1
 
-    for i = 0, 2 do
-        for j = 0, 2 do
+    for i = 1, 3 do
+        for j = 1, 3 do
             if (gridMatrix[i][j] == nil) then
                 emptySlots[emptySlotsIndex] = {}
-                emptySlots[emptySlotsIndex][0] = i
-                emptySlots[emptySlotsIndex][1] = j
-
-                --print(emptySlots[emptySlotsIndex][0] .. ';' .. emptySlots[emptySlotsIndex][1])
-
+                emptySlots[emptySlotsIndex][1] = i
+                emptySlots[emptySlotsIndex][2] = j
                 emptySlotsIndex = emptySlotsIndex + 1
             end 
         end
      end
-
      
-    local randIndex = 0
+    local randIndex = 1
     
-    if (emptySlotsIndex - 1 > 0) then
-        randIndex = math.random(emptySlotsIndex - 1) - 1
-    end
-    
-    if (emptySlots[randIndex] == nil) then
-        print ('randIndex is nil, returning')
-        return true
-    end
+    if emptySlotsIndex == 1 then
+        math.random(emptySlotsIndex)
+    else
+        math.random(emptySlotsIndex - 1)
 
-    local x = emptySlots[randIndex][0]
-    local y = emptySlots[randIndex][1]
+        print(randIndex)
 
-    --print ('local x: ' .. x .. ', y: ' .. y .. '. # of emptySlots: ' .. #emptySlots + 1)
+        local x = emptySlots[randIndex][1]
+        local y = emptySlots[randIndex][2]
 
-    --if (gridMatrix[x][y] == nil) then
-        local gridLookupInfoX = (x * 3) + y + 1
-        --print ("gridLookupInfoX: " .. gridLookupInfoX)
+        local gridLookupInfoX = (x * 3) + y - 3
+        print ("gridLookupInfoX: " .. gridLookupInfoX)
         handlePlayerMove('O',nil,
             gridLookupInfo[gridLookupInfoX][1],
             gridLookupInfo[gridLookupInfoX][2],
@@ -311,48 +302,46 @@ local function cpuPlayEasy()
             gridLookupInfo[gridLookupInfoX][7],
             gridLookupInfo[gridLookupInfoX][8]
         )
-    --end
-
+    end
 end
 
 local function cpuPlayHard()
 
     local gridLookupInfoX = 0
     local makeMove = false
-
+    local tmpX = 0
+    local tmpY = 0
     
-    for i = 0,2 do
+    for i = 1, 3 do
         local currentWinPlacementCount = 0
         local emptySlot = nil
-        local tmpX = 0
-        local tmpY = 0
         local isYMove = false
 
         -- blocking moves going across one each row, left <-> right
         -- Row moves
-        if (gridMatrix[i][0] == "X" and gridMatrix[i][2] == "X") then
+        if (gridMatrix[i][1] == "X" and gridMatrix[i][3] == "X") then
+            tmpX = 2
+            makeMove = true
+            isYMove = false
+        elseif (gridMatrix[i][2] == "X" and gridMatrix[i][3] == "X") then
             tmpX = 1
             makeMove = true
             isYMove = false
         elseif (gridMatrix[i][1] == "X" and gridMatrix[i][2] == "X") then
-            tmpX = 0
-            makeMove = true
-            isYMove = false
-        elseif (gridMatrix[i][0] == "X" and gridMatrix[i][1] == "X") then
-            tmpX = 2
+            tmpX = 3
             makeMove = true
             isYMove = false
         -- Column moves
-        elseif (gridMatrix[0][i] == "X" and gridMatrix[2][i] == "X") then
+        elseif (gridMatrix[1][i] == "X" and gridMatrix[3][i] == "X") then
+            tmpY = 2
+            makeMove = true
+            isYMove = true
+        elseif (gridMatrix[2][i] == "X" and gridMatrix[3][i] == "X") then
             tmpY = 1
             makeMove = true
             isYMove = true
         elseif (gridMatrix[1][i] == "X" and gridMatrix[2][i] == "X") then
-            tmpY = 0
-            makeMove = true
-            isYMove = true
-        elseif (gridMatrix[0][i] == "X" and gridMatrix[1][i] == "X") then
-            tmpY = 2
+            tmpY = 3
             makeMove = true
             isYMove = true
 
@@ -362,9 +351,9 @@ local function cpuPlayHard()
 
         if (makeMove == true) then
             if (isYMove == false) then
-                gridLookupInfoX = (i * 3) + tmpX + 1 -- gets correct lookup
+                gridLookupInfoX = (i * 3) + tmpX -3 -- gets correct lookup
             else
-                gridLookupInfoX = (tmpY * 3) + i + 1 -- gets correct lookup
+                gridLookupInfoX = (tmpY * 3) + i -3 -- gets correct lookup
             end
 
             handlePlayerMove('O',nil,
@@ -382,26 +371,30 @@ local function cpuPlayHard()
     end
 
     -- diagonal moves
-    if (gridMatrix[0][0] == "X" and gridMatrix[1][1] == "X") then
-        tmpX = 2
-        tmpY = 2
+    if (gridMatrix[1][1] == "X" and gridMatrix[2][2] == "X") then
+        tmpX = 3
+        tmpY = 3
         makeMove = true
-    elseif (gridMatrix[0][2] == "X" and gridMatrix[1][1] == "X") then
-        tmpX = 0
-        tmpY = 2
+    elseif (gridMatrix[1][3] == "X" and gridMatrix[2][2] == "X") then
+        tmpX = 1
+        tmpY = 3
         makeMove = true
-    elseif (gridMatrix[2][0] == "X" and gridMatrix[1][1] == "X") then
-        tmpX = 2
-        tmpY = 0
+    elseif (gridMatrix[3][1] == "X" and gridMatrix[2][2] == "X") then
+        tmpX = 3
+        tmpY = 1
         makeMove = true
-    elseif (gridMatrix[2][2] == "X" and gridMatrix[1][1] == "X") then
-        tmpX = 0
-        tmpY = 0
+    elseif (gridMatrix[3][3] == "X" and gridMatrix[2][2] == "X") then
+        tmpX = 1
+        tmpY = 1
         makeMove = true
     end
 
+
+    print ("tmp x " .. tmpX)
+    print ("tmp y " .. tmpY) 
+
     if (makeMove == true) then
-        gridLookupInfoX = (tmpY * 3) + tmpX + 1 -- gets correct lookup
+        gridLookupInfoX = (tmpY * 3) + tmpX  -3 -- gets correct lookup
         
         handlePlayerMove('O',nil,
                 gridLookupInfo[gridLookupInfoX][1],
@@ -423,12 +416,6 @@ end
 
 local function tapListener(event)
 
-    --print ("click")
-    --print ("currentPlayerMoveEnded: ")
-    --print (currentPlayerMoveEnded)
-   -- print ("gameEnded")
-    --print (gameEnded)
-
     if (gameEnded) then
         return true
     end
@@ -438,35 +425,26 @@ local function tapListener(event)
         if (currentPlayerMoveEnded == true) then
             audio.play(clickMusic)
             
-            --if (currentPlayerSymbol == 'X') then
-            --    currentPlayerSymbol = 'O'
-            --else
-                currentPlayerSymbol = 'X'
-            --end
+            currentPlayerSymbol = 'X'
 
             print ("current play: " .. currentPlayerSymbol)
             --                    event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
-            r1 = handlePlayerMove('X', event,   0, 300,   0, 300, 0, 0,  10,  10)
-            r2 = handlePlayerMove('X', event, 300, 600,   0, 300, 0, 1, 310,  10)
-            r3 = handlePlayerMove('X', event, 600, 900, 150, 300, 0, 2, 610,  10)
-            r4 = handlePlayerMove('X', event,   0, 300, 350, 600, 1, 0,  10, 310)
-            r5 = handlePlayerMove('X', event, 300, 600, 300, 600, 1, 1, 310, 310)
-            r6 = handlePlayerMove('X', event, 600, 900, 300, 600, 1, 2, 610, 310)
-            r7 = handlePlayerMove('X', event,   0, 300, 600, 900, 2, 0,  10, 610)
-            r8 = handlePlayerMove('X', event, 300, 600, 600, 900, 2, 1, 310, 610)
-            r9 = handlePlayerMove('X', event, 600, 900, 600, 900, 2, 2, 610, 610)
+            r1 = handlePlayerMove('X', event,   0, 300,   0, 300, 1, 1,  10,  10)
+            r2 = handlePlayerMove('X', event, 300, 600,   0, 300, 1, 2, 310,  10)
+            r3 = handlePlayerMove('X', event, 600, 900, 150, 300, 1, 3, 610,  10)
+            r4 = handlePlayerMove('X', event,   0, 300, 350, 600, 2, 1,  10, 310)
+            r5 = handlePlayerMove('X', event, 300, 600, 300, 600, 2, 2, 310, 310)
+            r6 = handlePlayerMove('X', event, 600, 900, 300, 600, 2, 3, 610, 310)
+            r7 = handlePlayerMove('X', event,   0, 300, 600, 900, 3, 1,  10, 610)
+            r8 = handlePlayerMove('X', event, 300, 600, 600, 900, 3, 2, 310, 610)
+            r9 = handlePlayerMove('X', event, 600, 900, 600, 900, 3, 3, 610, 610)
 
             if (handleWinCheckScenarios() == false) then
                 -- just ensuring that there was a valid player move before attempting CPU move and win check
                 if (r1 or r2 or r3 or r4 or r5 or r6 or r7 or r8 or r9) then
-                    --if (currentPlayerSymbol == 'X') then
-                        currentPlayerSymbol = 'O'
-                    --else
-                    --    currentPlayerSymbol = 'X'
-                    --end
-
-                    print ("current play: " .. currentPlayerSymbol)
-
+                    
+                    currentPlayerSymbol = 'O'
+                    
                     if (gameMode == "easy") then
                         cpuPlayEasy()
                     elseif (gameMode == "hard") then
