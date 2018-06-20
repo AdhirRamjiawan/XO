@@ -1,3 +1,5 @@
+local CPULogic = require("CPULogic")
+
 local GameLogicModule = {}
 
 local gridMatrix = {}
@@ -158,9 +160,9 @@ local function checkWinsOnMoveList(_moveList)
                 end
             end
 
-            print('xCount : ' .. xCount)
-            print('oCount : ' .. oCount)
-            print(' --- ')
+            -- print('xCount : ' .. xCount)
+            -- print('oCount : ' .. oCount)
+            -- print(' --- ')
 
 
             if (xCount == 3) then
@@ -179,11 +181,11 @@ local function handleWinCheckScenarios()
     local moveList = makeMoveList(gridMatrix)
     local winSymbol = checkWinsOnMoveList(moveList)
 
-    if winSymbol ~= nil then
-        print ("winsymbol " .. winSymbol)
-    else
-        print ("win symbol nil")
-    end
+    -- if winSymbol ~= nil then
+    --     print ("winsymbol " .. winSymbol)
+    -- else
+    --     print ("win symbol nil")
+    -- end
 
     if winSymbol ~= nil then
             print (" a win!")
@@ -225,7 +227,6 @@ local function handleWinCheckScenarios()
 
         audio.play(noWinMusic)
     end
-
     return false
 end
 
@@ -262,158 +263,6 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
 end
 
 
-
-local function cpuPlayEasy()
-    local emptySlots = {}
-    local emptySlotsIndex = 1
-
-    for i = 1, 3 do
-        for j = 1, 3 do
-            if (gridMatrix[i][j] == nil) then
-                emptySlots[emptySlotsIndex] = {}
-                emptySlots[emptySlotsIndex][1] = i
-                emptySlots[emptySlotsIndex][2] = j
-                emptySlotsIndex = emptySlotsIndex + 1
-            end 
-        end
-     end
-     
-    local randIndex = 1
-    
-    if emptySlotsIndex == 1 then
-        math.random(emptySlotsIndex)
-    else
-        math.random(emptySlotsIndex - 1)
-
-        print(randIndex)
-
-        local x = emptySlots[randIndex][1]
-        local y = emptySlots[randIndex][2]
-
-        local gridLookupInfoX = (x * 3) + y - 3
-        print ("gridLookupInfoX: " .. gridLookupInfoX)
-        handlePlayerMove('O',nil,
-            gridLookupInfo[gridLookupInfoX][1],
-            gridLookupInfo[gridLookupInfoX][2],
-            gridLookupInfo[gridLookupInfoX][3],
-            gridLookupInfo[gridLookupInfoX][4],
-            gridLookupInfo[gridLookupInfoX][5],
-            gridLookupInfo[gridLookupInfoX][6],
-            gridLookupInfo[gridLookupInfoX][7],
-            gridLookupInfo[gridLookupInfoX][8]
-        )
-    end
-end
-
-local function cpuPlayHard()
-
-    local gridLookupInfoX = 0
-    local makeMove = false
-    local tmpX = 0
-    local tmpY = 0
-    
-    for i = 1, 3 do
-        local currentWinPlacementCount = 0
-        local emptySlot = nil
-        local isYMove = false
-
-        -- blocking moves going across one each row, left <-> right
-        -- Row moves
-        if (gridMatrix[i][1] == "X" and gridMatrix[i][3] == "X") then
-            tmpX = 2
-            makeMove = true
-            isYMove = false
-        elseif (gridMatrix[i][2] == "X" and gridMatrix[i][3] == "X") then
-            tmpX = 1
-            makeMove = true
-            isYMove = false
-        elseif (gridMatrix[i][1] == "X" and gridMatrix[i][2] == "X") then
-            tmpX = 3
-            makeMove = true
-            isYMove = false
-        -- Column moves
-        elseif (gridMatrix[1][i] == "X" and gridMatrix[3][i] == "X") then
-            tmpY = 2
-            makeMove = true
-            isYMove = true
-        elseif (gridMatrix[2][i] == "X" and gridMatrix[3][i] == "X") then
-            tmpY = 1
-            makeMove = true
-            isYMove = true
-        elseif (gridMatrix[1][i] == "X" and gridMatrix[2][i] == "X") then
-            tmpY = 3
-            makeMove = true
-            isYMove = true
-
-        else
-            makeMove = false
-        end
-
-        if (makeMove == true) then
-            if (isYMove == false) then
-                gridLookupInfoX = (i * 3) + tmpX -3 -- gets correct lookup
-            else
-                gridLookupInfoX = (tmpY * 3) + i -3 -- gets correct lookup
-            end
-
-            handlePlayerMove('O',nil,
-                    gridLookupInfo[gridLookupInfoX][1],
-                    gridLookupInfo[gridLookupInfoX][2],
-                    gridLookupInfo[gridLookupInfoX][3],
-                    gridLookupInfo[gridLookupInfoX][4],
-                    gridLookupInfo[gridLookupInfoX][5], -- x
-                    gridLookupInfo[gridLookupInfoX][6], -- y
-                    gridLookupInfo[gridLookupInfoX][7],
-                    gridLookupInfo[gridLookupInfoX][8]
-                )
-        end
-
-    end
-
-    -- diagonal moves
-    if (gridMatrix[1][1] == "X" and gridMatrix[2][2] == "X") then
-        tmpX = 3
-        tmpY = 3
-        makeMove = true
-    elseif (gridMatrix[1][3] == "X" and gridMatrix[2][2] == "X") then
-        tmpX = 1
-        tmpY = 3
-        makeMove = true
-    elseif (gridMatrix[3][1] == "X" and gridMatrix[2][2] == "X") then
-        tmpX = 3
-        tmpY = 1
-        makeMove = true
-    elseif (gridMatrix[3][3] == "X" and gridMatrix[2][2] == "X") then
-        tmpX = 1
-        tmpY = 1
-        makeMove = true
-    end
-
-
-    print ("tmp x " .. tmpX)
-    print ("tmp y " .. tmpY) 
-
-    if (makeMove == true) then
-        gridLookupInfoX = (tmpY * 3) + tmpX  -3 -- gets correct lookup
-        
-        handlePlayerMove('O',nil,
-                gridLookupInfo[gridLookupInfoX][1],
-                gridLookupInfo[gridLookupInfoX][2],
-                gridLookupInfo[gridLookupInfoX][3],
-                gridLookupInfo[gridLookupInfoX][4],
-                gridLookupInfo[gridLookupInfoX][5], -- x
-                gridLookupInfo[gridLookupInfoX][6], -- y
-                gridLookupInfo[gridLookupInfoX][7],
-                gridLookupInfo[gridLookupInfoX][8]
-            )
-    end
-
-    if (makeMove == false) then
-        print("finding an easy CPU play!")
-        cpuPlayEasy()
-    end
-end
-
 local function tapListener(event)
 
     if (gameEnded) then
@@ -446,9 +295,9 @@ local function tapListener(event)
                     currentPlayerSymbol = 'O'
                     
                     if (gameMode == "easy") then
-                        cpuPlayEasy()
+                        CPULogic.CPUPlayEasy(gridMatrix, gridLookupInfo, handlePlayerMove)
                     elseif (gameMode == "hard") then
-                        cpuPlayHard()
+                        CPULogic.CPUPlayHard(gridMatrix, gridLookupInfo, handlePlayerMove)
                     end
 
                     handleWinCheckScenarios()
