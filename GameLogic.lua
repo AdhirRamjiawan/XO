@@ -119,60 +119,18 @@ local function handleWinCheckScenarios()
     local moveList = GameUtils.MakeMoveList(gridMatrix)
     local winSymbol = GameUtils.CheckWinsOnMoveList(moveList)
 
-    -- if winSymbol ~= nil then
-    --     print ("winsymbol " .. winSymbol)
-    -- else
-    --     print ("win symbol nil")
-    -- end
+    if winSymbol ~= nil then
+        print ("game logic winsymbol " .. winSymbol)
+    end
 
     if winSymbol ~= nil then
-            print (" a win!")
-            gameEnded = true
-            gameEndedTime = getTime()
+        gameEnded = true
+        composer.gotoScene("GameFinishedScene", { params = { winSymbol = winSymbol }})
 
-            audio.setVolume(musicVolume)
-
-            if (winSymbol == 'X') then
-                audio.play(winMusic)
-            else
-                audio.play(noWinMusic)
-            end
-
-            composer.showOverlay( "GameFinishedScene", {
-                isModal = true,
-                effect = "fade",
-                time = 100,
-                params = {
-                    winSymbol = winSymbol,
-                }
-            } )
-
-            -- local wonImage = display.newImageRect("assets/".. winSymbol .."_has_won.png", 800, 300)
-            -- wonImage.anchorX = 0
-            -- wonImage.anchorY = 0
-            -- wonImage.x = 50
-            -- wonImage.y = display.contentCenterY
-        
-            -- displayAssets[displayAssetsIndex] = wonImage
-            -- displayAssetsIndex = displayAssetsIndex + 1
-
-            -- timeFromWin = os.time(time)
-
-            return true
+        return true
     elseif (noPlayAvailable()) then
         gameEnded = true
-        gameEndedTime = getTime()
-
-        local noWinImage = display.newImageRect("assets/no_win.png", 800, 300)
-        noWinImage.anchorX = 0
-        noWinImage.anchorY = 0
-        noWinImage.x = 50
-        noWinImage.y = display.contentCenterY
-
-        displayAssets[displayAssetsIndex] = noWinImage
-        displayAssetsIndex = displayAssetsIndex + 1
-
-        audio.play(noWinMusic)
+        composer.gotoScene("GameFinishedScene")
     end
     return false
 end
@@ -223,7 +181,7 @@ local function tapListener(event)
             
             currentPlayerSymbol = 'X'
 
-            print ("current play: " .. currentPlayerSymbol)
+            --print ("current play: " .. currentPlayerSymbol)
             --                    event,  X1,  X2,  Y1,  Y2,GX,GY,  PX,  PY
             r1 = handlePlayerMove('X', event,   0, 300,   0, 300, 1, 1,  10,  10)
             r2 = handlePlayerMove('X', event, 300, 600,   0, 300, 1, 2, 310,  10)
@@ -271,7 +229,7 @@ local function keyboardListener(event)
         end
 
         if (event.keyName == "r") then
-            ResetGame()
+            GameLogicModule.ResetGame()
         end
     end
 end
@@ -284,7 +242,9 @@ local function onFrame(event)
 end
 
 function GameLogicModule.StartGame(paramGameMode)
-
+    composer.removeScene("MainMenu")
+    composer.removeScene("GameFinishedScene")
+    
     print (paramGameMode)
     gameMode = paramGameMode
     GameLogicModule.ResetGame()
