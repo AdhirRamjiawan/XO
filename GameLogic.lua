@@ -1,3 +1,4 @@
+local composer = require( "composer" )
 local CPULogic = require("CPULogic")
 local GameUtils = require("GameUtils")
 
@@ -81,7 +82,7 @@ local function noPlayAvailable()
     return true
 end
 
-local function ResetGame()
+GameLogicModule.ResetGame =  function ()
     initGridMatrix()
     currentPlayerSymbol = "X"
     currentPlayerMoveEnded = true
@@ -137,16 +138,25 @@ local function handleWinCheckScenarios()
                 audio.play(noWinMusic)
             end
 
-            local wonImage = display.newImageRect("assets/".. winSymbol .."_has_won.png", 800, 300)
-            wonImage.anchorX = 0
-            wonImage.anchorY = 0
-            wonImage.x = 50
-            wonImage.y = display.contentCenterY
-        
-            displayAssets[displayAssetsIndex] = wonImage
-            displayAssetsIndex = displayAssetsIndex + 1
+            composer.showOverlay( "GameFinishedScene", {
+                isModal = true,
+                effect = "fade",
+                time = 100,
+                params = {
+                    winSymbol = winSymbol,
+                }
+            } )
 
-            timeFromWin = os.time(time)
+            -- local wonImage = display.newImageRect("assets/".. winSymbol .."_has_won.png", 800, 300)
+            -- wonImage.anchorX = 0
+            -- wonImage.anchorY = 0
+            -- wonImage.x = 50
+            -- wonImage.y = display.contentCenterY
+        
+            -- displayAssets[displayAssetsIndex] = wonImage
+            -- displayAssetsIndex = displayAssetsIndex + 1
+
+            -- timeFromWin = os.time(time)
 
             return true
     elseif (noPlayAvailable()) then
@@ -268,16 +278,16 @@ end
 
 
 local function onFrame(event)
-    if (gameEnded and (getTime() - gameEndedTime) > 3) then
-        ResetGame()
-    end
+    -- if (gameEnded and (getTime() - gameEndedTime) > 3) then
+    --     ResetGame()
+    -- end
 end
 
 function GameLogicModule.StartGame(paramGameMode)
 
     print (paramGameMode)
     gameMode = paramGameMode
-    ResetGame()
+    GameLogicModule.ResetGame()
 
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)

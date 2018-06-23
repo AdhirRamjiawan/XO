@@ -1,33 +1,26 @@
 local composer = require( "composer" )
-local GameLogic = require("GameLogic")
 
-local gameMode = "easy"
- 
 local scene = composer.newScene()
- 
--- -----------------------------------------------------------------------------------
--- Code outside of the scene event functions below will only be executed ONCE unless
--- the scene is removed entirely (not recycled) via "composer.removeScene()"
--- -----------------------------------------------------------------------------------
- 
-function scene:resumeGame()
-    -- Code to resume game
-    GameLogic.ResetGame()
-end
- 
- 
+
+local winSymbol = nil
+local wonImage = nil
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
  
 -- create()
 function scene:create( event )
- 
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-    gameMode = event.params.gameMode
+    winSymbol = event.params.winSymbol
 end
  
+function close_tap(event)
+    wonImage:removeSelf()
+    wonImage = nil
+    composer.hideOverlay( "fade", 100 )
+end
  
 -- show()
 function scene:show( event )
@@ -40,7 +33,26 @@ function scene:show( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
-        GameLogic.StartGame(gameMode)
+        --GameLogic.StartGame(gameMode)
+
+        -- audio.setVolume(musicVolume)
+
+        -- if (winSymbol == 'X') then
+        --     audio.play(winMusic)
+        -- else
+        --     audio.play(noWinMusic)
+        -- end
+
+        --local wonImage = display.newImageRect("assets/".. winSymbol .."_has_won.png", 800, 300)
+        wonImage = display.newImageRect("assets/X_has_won.png", 800, 300)
+        wonImage.anchorX = 0
+        wonImage.anchorY = 0
+        wonImage.x = 50
+        wonImage.y = display.contentCenterY
+
+        wonImage:addEventListener("touch", close_tap)
+        
+        
     end
 end
  
@@ -50,13 +62,14 @@ function scene:hide( event )
  
     local sceneGroup = self.view
     local phase = event.phase
- 
+    local parent = event.parent
+
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
- 
+        parent:resumeGame()
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
- 
+        
     end
 end
  
@@ -66,10 +79,12 @@ function scene:destroy( event )
  
     local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
- 
 end
  
+
+
  
+
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
