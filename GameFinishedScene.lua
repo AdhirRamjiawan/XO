@@ -35,15 +35,49 @@ function scene:create( event )
     else
         print ("GameFinishedScene winSymbol nil")
     end
+
 end
- 
-function close_tap(event)
+
+function playAgainTap(event)
     if ( event.phase == "ended" ) then 
         audio.stop()
         composer.gotoScene("GameScene", { params = { gameMode = "easy" }, effect = "zoomInOutFade"})
     end
 end
  
+
+function backToMainMenuTap(event)
+    if ( event.phase == "ended" ) then 
+        audio.stop()
+        composer.gotoScene("MainMenuScene", { effect = "zoomInOutFade"})
+    end
+end
+
+function displayButtons()
+    
+    local restartIcon = display.newImageRect("assets/play_again_icon.png", 100, 100)
+    restartIcon.anchorX = 0
+    restartIcon.anchorY = 0
+    restartIcon.x = 750
+    restartIcon.y = 500
+
+    sceneGroup:insert(restartIcon)
+
+    restartIcon:addEventListener("touch", playAgainTap)
+
+
+    local backtoMenuIcon = display.newImageRect("assets/back_main_menu.png", 100, 100)
+    backtoMenuIcon.anchorX = 0
+    backtoMenuIcon.anchorY = 0
+    backtoMenuIcon.x = 750
+    backtoMenuIcon.y = 650
+
+    sceneGroup:insert(backtoMenuIcon)
+
+    backtoMenuIcon:addEventListener("touch", backToMainMenuTap)
+end
+
+
 -- show()
 function scene:show( event )
  
@@ -68,8 +102,8 @@ function scene:show( event )
             wonImage.x = 0
             wonImage.y = 0
 
-            wonImage:addEventListener("touch", close_tap)
             sceneGroup:insert(wonImage)
+            displayButtons()
         elseif (winSymbol == 'O') then
             print ("o won")
             audio.play(noWinMusic)
@@ -79,8 +113,8 @@ function scene:show( event )
             wonImage.x = 0
             wonImage.y = 0
 
-            wonImage:addEventListener("touch", close_tap)
             sceneGroup:insert(wonImage)
+            displayButtons()
         else
             print ("no win")
             wonImage = display.newImageRect("assets/no_win.png", 800, 300)
@@ -90,8 +124,9 @@ function scene:show( event )
             wonImage.y = 0
 
             audio.play(noWinMusic)
-            wonImage:addEventListener("touch", close_tap)
+         
             sceneGroup:insert(wonImage)
+            displayButtons()
         end
         
         
