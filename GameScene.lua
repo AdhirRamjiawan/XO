@@ -40,7 +40,7 @@ function scene:show( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
-        GameLogic.StartGame(gameMode)
+        GameLogic.StartGame(gameMode, sceneGroup)
     end
 end
  

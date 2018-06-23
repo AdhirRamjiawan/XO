@@ -1,5 +1,6 @@
 local composer = require("composer")
 
+local sceneGroup = nil
 local MainMenuLogicModule = {}
 
 local background = nil
@@ -17,6 +18,7 @@ local backgroundEffectsCounter = 0
 
 local musicVolume = 0.5
 local musicPlaying = true
+
 
 audio.setVolume(musicVolume)
 audio.play(backgroundMusic)
@@ -50,7 +52,7 @@ local function button_easy_spriteListener( event )
     
     if ( event.phase == "ended" ) then 
         audio.stop(1)
-        composer.gotoScene("GameScene", { params = { gameMode = "easy" }})
+        composer.gotoScene("GameScene", { params = { gameMode = "easy" }, effect = "zoomInOutFade"})
     end
 end
 
@@ -59,7 +61,7 @@ local function button_hard_tap(event)
     --if (event.phase == "ended") then
         print("hard 2")
         audio.stop(1)
-        composer.gotoScene("GameScene", { params = { gameMode = "hard" }})
+        composer.gotoScene("GameScene", { params = { gameMode = "hard", effect = "zoomInOutFade" }})
    -- end
 end
 
@@ -100,6 +102,8 @@ local function tapListener(event)
             button_easy_animation.x = 250
             button_easy_animation.y = 400
             
+            sceneGroup:insert(button_easy_animation)
+
             button_easy_animation:addEventListener( "sprite", button_easy_spriteListener )
 
             button_easy_animation:setSequence("button_easy_click")
@@ -119,6 +123,8 @@ function setupLogoAnimation()
     }
 
     local sheet_logo = graphics.newImageSheet("assets/main_menu/logo_sprite_sheet.png", logo_SheetOptions)
+    --sceneGroup:insert(sheet_logo)
+
     local sequences_logo_animation = {
         {
             name = "logo_sprite",
@@ -137,6 +143,8 @@ function setupLogoAnimation()
     
     logo_animation:setSequence("button_easy_click")
     logo_animation:play()
+
+    sceneGroup:insert(logo_animation)
 end
 
 local function onFrame(event)
@@ -151,8 +159,8 @@ end
 
 
 
-function MainMenuLogicModule.CreateMainMenu()
-    
+function MainMenuLogicModule.CreateMainMenu(_sceneGroup)
+    sceneGroup = _sceneGroup
     background = display.newImageRect("assets/background.jpg", 900, 900)
     background.anchorX = 0
     background.anchorY = 0
@@ -182,6 +190,10 @@ function MainMenuLogicModule.CreateMainMenu()
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)
     Runtime:addEventListener("enterFrame", onFrame)
+
+    sceneGroup:insert(background)
+    sceneGroup:insert(button_easy)
+    sceneGroup:insert(button_hard)
 end
 
 return MainMenuLogicModule

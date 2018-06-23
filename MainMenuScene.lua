@@ -19,7 +19,7 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
- 
+    MainMenuLogic.CreateMainMenu(sceneGroup)
 end
  
  
@@ -31,7 +31,7 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        MainMenuLogic.CreateMainMenu()
+        
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         

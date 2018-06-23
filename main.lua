@@ -8,5 +8,5 @@
 
 local composer = require("composer")
 
-composer.gotoScene("MainMenuScene")
+composer.gotoScene("MainMenuScene", "fade", 400 )
 --composer.gotoScene("GameScene")

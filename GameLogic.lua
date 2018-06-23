@@ -3,6 +3,7 @@ local CPULogic = require("CPULogic")
 local GameUtils = require("GameUtils")
 
 local GameLogicModule = {}
+local sceneGroup = nil
 
 local gridMatrix = {}
 local gameEnded = false
@@ -105,12 +106,15 @@ GameLogicModule.ResetGame =  function ()
         background = display.newImageRect("assets/background.jpg", 900, 900)
         background.anchorX = 0
         background.anchorY = 0
+
+        sceneGroup:insert(background)
     end
 
     if (grid == nil) then
         grid = display.newImageRect("assets/grid.png", 900, 900)
         grid.anchorX = 0
         grid.anchorY = 0
+        sceneGroup:insert(grid)
     end
 end
 
@@ -163,6 +167,8 @@ local function handlePlayerMove(currentPlayerSymbol, event, x1, x2, y1, y2, grid
     cpuTurn = not cpuTurn
 
     currentPlayerMoveEnded = true
+
+    sceneGroup:insert(playerSymbol)
 
     return true
 end
@@ -241,7 +247,8 @@ local function onFrame(event)
     -- end
 end
 
-function GameLogicModule.StartGame(paramGameMode)
+function GameLogicModule.StartGame(paramGameMode, _sceneGroup)
+    sceneGroup = _sceneGroup
     composer.removeScene("MainMenu")
     composer.removeScene("GameFinishedScene")
     

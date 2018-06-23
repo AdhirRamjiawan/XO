@@ -1,6 +1,7 @@
 local composer = require( "composer" )
 
 local scene = composer.newScene()
+local sceneGroup = nil
 
 local winSymbol = nil
 local wonImage = nil
@@ -21,7 +22,9 @@ end
 -- create()
 function scene:create( event )
     ResetScene()
-    local sceneGroup = self.view
+    local _sceneGroup = self.view
+    sceneGroup = _sceneGroup
+
     -- Code here runs when the scene is first created but has not yet appeared on screen
     if event.params ~= nil then
         winSymbol = event.params.winSymbol
@@ -37,14 +40,14 @@ end
 function close_tap(event)
     if ( event.phase == "ended" ) then 
         audio.stop()
-        composer.gotoScene("GameScene", { params = { gameMode = "easy" }})
+        composer.gotoScene("GameScene", { params = { gameMode = "easy" }, effect = "zoomInOutFade"})
     end
 end
  
 -- show()
 function scene:show( event )
  
-    local sceneGroup = self.view
+    --local sceneGroup = self.view
     local phase = event.phase
  
     if ( phase == "will" ) then
@@ -66,6 +69,7 @@ function scene:show( event )
             wonImage.y = 0
 
             wonImage:addEventListener("touch", close_tap)
+            sceneGroup:insert(wonImage)
         elseif (winSymbol == 'O') then
             print ("o won")
             audio.play(noWinMusic)
@@ -76,6 +80,7 @@ function scene:show( event )
             wonImage.y = 0
 
             wonImage:addEventListener("touch", close_tap)
+            sceneGroup:insert(wonImage)
         else
             print ("no win")
             wonImage = display.newImageRect("assets/no_win.png", 800, 300)
@@ -86,6 +91,7 @@ function scene:show( event )
 
             audio.play(noWinMusic)
             wonImage:addEventListener("touch", close_tap)
+            sceneGroup:insert(wonImage)
         end
         
         
@@ -96,7 +102,7 @@ end
 -- hide()
 function scene:hide( event )
  
-    local sceneGroup = self.view
+    --local sceneGroup = self.view
     local phase = event.phase
 
     if ( phase == "will" ) then
@@ -112,7 +118,7 @@ end
 -- destroy()
 function scene:destroy( event )
  
-    local sceneGroup = self.view
+    --local sceneGroup = self.view
     -- Code here runs prior to the removal of scene's view
 end
  
