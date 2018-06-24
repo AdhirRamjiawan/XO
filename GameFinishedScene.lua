@@ -1,14 +1,17 @@
 local composer = require( "composer" )
+local gameStatsLogic = require("GameStats")
 
 local scene = composer.newScene()
 local sceneGroup = nil
 
+local gameMode = nil
 local winSymbol = nil
 local wonImage = nil
 local winMusic = audio.loadSound("assets/win.ogg")
 local noWinMusic = audio.loadSound("assets/nowin.ogg")
 local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 
+local gameStats = nil
 
 local function ResetScene()
     winSymbol = nil
@@ -28,10 +31,51 @@ function scene:create( event )
     -- Code here runs when the scene is first created but has not yet appeared on screen
     if event.params ~= nil then
         winSymbol = event.params.winSymbol
+        gameMode = event.params.gameMode
     end
     
     if winSymbol ~= nil then
         print("GameFinishedScene winSymbol " .. winSymbol)
+
+        gameStats = gameStatsLogic.GetStats()
+
+        local playerScore = 0
+        local cpuScore = 0
+
+        if gameMode == "easy" then
+            playerScore = gameStats.Easy.PlayerScore
+            cpuScore = gameStats.Easy.CPUScore
+
+            if winSymbol == "X" then
+                playerScore = playerScore + 1
+            elseif winSymbol == "O" then
+                cpuScore = cpuScore + 1
+            end
+
+            gameStatsLogic.SaveEasyStats({ PlayerScore = playerScore, CPUScore = cpuScore})
+
+            print ("Player score " .. gameStats.Easy.PlayerScore)
+            print ("Player score " .. gameStats.Easy.CPUScore)
+        elseif gameMode == "hard" then
+            playerScore = gameStats.Hard.PlayerScore
+            cpuScore = gameStats.Hard.CPUScore
+
+            if winSymbol == "X" then
+                playerScore = playerScore + 1
+            elseif winSymbol == "O" then
+                cpuScore = cpuScore + 1
+            end
+
+            gameStatsLogic.SaveHardStats({ PlayerScore = playerScore, CPUScore = cpuScore})
+
+            print ("Player score " .. gameStats.Hard.PlayerScore)
+            print ("Player score " .. gameStats.Hard.CPUScore)
+        end
+
+        -- not effecient
+        gameStats = gameStatsLogic.GetStats()
+        
+        
     else
         print ("GameFinishedScene winSymbol nil")
     end

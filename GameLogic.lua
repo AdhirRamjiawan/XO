@@ -129,7 +129,7 @@ local function handleWinCheckScenarios()
 
     if winSymbol ~= nil then
         gameEnded = true
-        composer.gotoScene("GameFinishedScene", { params = { winSymbol = winSymbol }})
+        composer.gotoScene("GameFinishedScene", { params = { winSymbol = winSymbol, gameMode = gameMode }})
 
         return true
     elseif (noPlayAvailable()) then
