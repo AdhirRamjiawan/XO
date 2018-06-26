@@ -36,7 +36,7 @@ function scene:create( event )
     
     if winSymbol ~= nil then
         print("GameFinishedScene winSymbol " .. winSymbol)
-
+        --testWrite()
         gameStats = gameStatsLogic.GetStats()
 
         local playerScore = 0
@@ -52,7 +52,10 @@ function scene:create( event )
                 cpuScore = cpuScore + 1
             end
 
-            gameStatsLogic.SaveEasyStats({ PlayerScore = playerScore, CPUScore = cpuScore})
+            print (winSymbol)
+            print ("player score: " .. playerScore .. ", cpu score: " .. cpuScore)
+
+            gameStatsLogic.SaveEasyStats({Easy = { PlayerScore = playerScore, CPUScore = cpuScore}})
 
             print ("Player score " .. gameStats.Easy.PlayerScore)
             print ("Player score " .. gameStats.Easy.CPUScore)
@@ -136,7 +139,7 @@ function scene:show( event )
         --GameLogic.StartGame(gameMode)
 
         -- audio.setVolume(musicVolume)
-        print (winSymbol)
+        
         if (winSymbol == 'X') then
             print ("x won")
             audio.play(winMusic)
