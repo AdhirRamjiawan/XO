@@ -127,7 +127,9 @@ end
 
 -- show()
 function scene:show( event )
- 
+    local playerScore = 0
+    local cpuScore = 0
+
     --local sceneGroup = self.view
     local phase = event.phase
  
@@ -175,7 +177,22 @@ function scene:show( event )
             sceneGroup:insert(wonImage)
             displayButtons()
         end
-        
+
+        if gameMode == "easy" then 
+            playerScore = gameStats.Easy.PlayerScore
+            cpuScore = gameStats.Easy.CPUScore
+        elseif gameMode == "hard" then
+            playerScore = gameStats.Hard.PlayerScore
+            cpuScore = gameStats.Hard.CPUScore
+        end
+
+        local playerScoreText = display.newText( "Player Score: " .. playerScore, 350, 550, "GloriaHallelujah.ttf", 80 )
+        playerScoreText:setFillColor( 1, 0, 0 )
+        sceneGroup:insert(playerScoreText)
+
+        local cpuScoreText = display.newText( "CPU Score: " .. cpuScore, 350, 650, "GloriaHallelujah.ttf", 80 )
+        cpuScoreText:setFillColor( 0.8, 0, 0.8 )
+        sceneGroup:insert(cpuScoreText)
         
     end
 end
