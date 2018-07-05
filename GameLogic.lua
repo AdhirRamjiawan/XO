@@ -14,6 +14,7 @@ local displayAssetsIndex = 0
 local cpuTurn = false
 local gameMode = "easy"
 
+
 local r1 = false
 local r2 = false
 local r3 = false
@@ -129,10 +130,12 @@ local function handleWinCheckScenarios()
 
     if winSymbol ~= nil then
         gameEnded = true
+        audio.play(winMusic)
         composer.gotoScene("GameFinishedScene", { params = { winSymbol = winSymbol, gameMode = gameMode }, effect = "zoomInOutFade"})
 
         return true
     elseif (noPlayAvailable()) then
+        audio.play(noWinMusic)
         gameEnded = true
         composer.gotoScene("GameFinishedScene")
     end

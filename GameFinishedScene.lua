@@ -7,8 +7,7 @@ local sceneGroup = nil
 local gameMode = nil
 local winSymbol = nil
 local wonImage = nil
-local winMusic = audio.loadSound("assets/win.ogg")
-local noWinMusic = audio.loadSound("assets/nowin.ogg")
+
 local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 
 local gameStats = nil
@@ -87,7 +86,6 @@ end
 
 function playAgainTap(event)
     if ( event.phase == "ended" ) then 
-        audio.stop()
         composer.gotoScene("GameScene", { params = { gameMode = "easy" }, effect = "zoomInOutFade"})
     end
 end
@@ -95,7 +93,6 @@ end
 
 function backToMainMenuTap(event)
     if ( event.phase == "ended" ) then 
-        audio.stop()
         composer.gotoScene("MainMenuScene", { effect = "zoomInOutFade"})
     end
 end
@@ -144,7 +141,7 @@ function scene:show( event )
         
         if (winSymbol == 'X') then
             print ("x won")
-            audio.play(winMusic)
+            
             wonImage = display.newImageRect("assets/x_won.png", 900, 900)
             wonImage.anchorX = 0
             wonImage.anchorY = 0
@@ -155,7 +152,7 @@ function scene:show( event )
             displayButtons()
         elseif (winSymbol == 'O') then
             print ("o won")
-            audio.play(noWinMusic)
+            
             wonImage = display.newImageRect("assets/o_won.png", 900, 900)
             wonImage.anchorX = 0
             wonImage.anchorY = 0
@@ -172,8 +169,7 @@ function scene:show( event )
             wonImage.x = 0
             wonImage.y = 0
 
-            audio.play(noWinMusic)
-         
+           
             sceneGroup:insert(wonImage)
             displayButtons()
         end
