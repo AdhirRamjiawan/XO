@@ -61,7 +61,10 @@ local function button_hard_tap(event)
     --if (event.phase == "ended") then
         print("hard 2")
         audio.stop(1)
-        composer.gotoScene("GameScene", { params = { gameMode = "hard", effect = "zoomInOutFade" }})
+        if (event.phase == "ended") then
+            composer.gotoScene("GameScene", { params = { gameMode = "hard", effect = "zoomInOutFade" }})
+        end
+        
    -- end
 end
 

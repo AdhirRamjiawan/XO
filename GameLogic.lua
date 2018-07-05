@@ -130,7 +130,13 @@ local function handleWinCheckScenarios()
 
     if winSymbol ~= nil then
         gameEnded = true
-        audio.play(winMusic)
+
+        if (winSymbol == "X") then 
+            audio.play(winMusic)
+        else
+            audio.play(noWinMusic)
+        end
+
         composer.gotoScene("GameFinishedScene", { params = { winSymbol = winSymbol, gameMode = gameMode }, effect = "zoomInOutFade"})
 
         return true
