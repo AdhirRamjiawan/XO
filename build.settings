@@ -21,7 +21,7 @@ settings =
 	},
 
 	android = {
-		versionCode ="12"
+		versionCode ="13"
 	}
 	
 }
