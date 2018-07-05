@@ -142,9 +142,12 @@ function setupLogoAnimation()
     logo_animation.y = 50
     
     logo_animation:setSequence("button_easy_click")
-    logo_animation:play()
 
     sceneGroup:insert(logo_animation)
+
+    logo_animation:play()
+
+    
 end
 
 local function onFrame(event)
@@ -171,8 +174,6 @@ function MainMenuLogicModule.CreateMainMenu(_sceneGroup)
     --logo.x = 150
     --logo.y = 50
     
-    setupLogoAnimation()
-
 
     button_easy = display.newImageRect("assets/main_menu/button_easy.png", 400, 200)
     button_easy.anchorX = 0
@@ -194,6 +195,8 @@ function MainMenuLogicModule.CreateMainMenu(_sceneGroup)
     sceneGroup:insert(background)
     sceneGroup:insert(button_easy)
     sceneGroup:insert(button_hard)
+
+    setupLogoAnimation()
 end
 
 return MainMenuLogicModule
