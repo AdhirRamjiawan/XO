@@ -50,8 +50,6 @@ local clickMusic = audio.loadSound("assets/main_menu/click.ogg")
 local musicVolume = 0.5
 local musicPlaying = true
 
-audio.setVolume(musicVolume)
-audio.play(backgroundMusic, { loops = -1})
 
 local function getTime()
     local time = os.date('*t')
@@ -192,6 +190,7 @@ local function tapListener(event)
     if (event.phase == "ended") then
 
         if (currentPlayerMoveEnded == true) then
+            print("tap")
             audio.play(clickMusic)
             
             currentPlayerSymbol = 'X'
@@ -261,10 +260,16 @@ function GameLogicModule.StartGame(paramGameMode, _sceneGroup)
     composer.removeScene("MainMenu")
     composer.removeScene("GameFinishedScene")
     
+
+    audio.stop(1)
+    audio.setVolume(musicVolume)
+    audio.play(backgroundMusic, { loops = -1})
+
     print (paramGameMode)
     gameMode = paramGameMode
     GameLogicModule.ResetGame()
 
+    background:removeEventListener( "touch", tapListener)
     background:addEventListener("touch", tapListener)
     Runtime:addEventListener("key", keyboardListener)
     Runtime:addEventListener("enterFrame", onFrame)
