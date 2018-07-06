@@ -26,7 +26,7 @@ function init(fileAccessMode)
     else
         file = io.open(path, "w")
         file:write("")
-        io:close(file)
+
     end
 
     if errorString ~= nil then print(errorString) end
