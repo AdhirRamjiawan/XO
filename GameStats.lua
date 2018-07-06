@@ -18,7 +18,16 @@ end
 function init(fileAccessMode)
     local path = system.pathForFile( "gamestats.dat", system.DocumentsDirectory )
     print(path)
+    
     file, errorString = io.open(path, fileAccessMode)
+
+    if (file) then
+        
+    else
+        file = io.open(path, "w")
+        file:write("")
+        io:close(file)
+    end
 
     if errorString ~= nil then print(errorString) end
 end
